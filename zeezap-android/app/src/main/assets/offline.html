@@ -2,22 +2,1052 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Offline</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#12285a">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>Zeezap Business Manager</title>
 <style>
-  body { margin:0; font-family: sans-serif; background:#12285a; color:#fff;
-         display:flex; align-items:center; justify-content:center; min-height:100vh; text-align:center; }
-  .box { padding: 24px; }
-  h1 { font-size: 22px; margin: 0 0 8px; }
-  p { opacity:.8; margin: 0 0 20px; }
-  button { background:#fff; color:#12285a; border:0; border-radius:8px; padding:12px 24px; font-size:16px; }
+:root{--navy:#12285a;--navy2:#1d3a7a;--gold:#c8963e;--bg:#f3f5f9;--card:#fff;--tx:#1b2335;--mut:#66708a;--bd:#e2e6ef;--ok:#14804a;--bad:#c62f3a;--warn:#b7791f;--r:12px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--navy2)}
+#app{min-height:100vh}
+.side{display:none}
+.top{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;display:flex;align-items:center;gap:10px;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top))}
+.top b{font-size:16px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top small{opacity:.75}
+.top button{background:rgba(255,255,255,.14);border:0;color:#fff;border-radius:8px;padding:6px 10px}
+main{padding:14px 14px 90px;max-width:1180px;margin:0 auto}
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#fff;border-top:1px solid var(--bd);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+.bnav a{flex:1;text-align:center;padding:7px 2px 6px;font-size:11px;text-decoration:none;color:var(--mut);cursor:pointer}
+.bnav a i{display:block;font-style:normal;font-size:20px;line-height:1.2}
+.bnav a.on{color:var(--navy);font-weight:600}
+@media(min-width:900px){
+ .side{display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;width:228px;background:var(--navy);color:#fff;padding:14px 10px;overflow:auto}
+ .side h2{margin:6px 8px 14px;font-size:17px}.side h2 small{display:block;font-weight:400;opacity:.7;font-size:12px}
+ .side a{display:flex;gap:10px;align-items:center;color:#dfe6f7;text-decoration:none;padding:9px 12px;border-radius:9px;cursor:pointer}
+ .side a:hover{background:rgba(255,255,255,.08)}.side a.on{background:var(--gold);color:#241a05;font-weight:600}
+ .bnav{display:none}.top{margin-left:228px}main{margin-left:228px;max-width:none;padding:18px 26px 40px}
+}
+h1{font-size:20px;margin:2px 0 12px}h2.sec{font-size:15px;margin:18px 0 8px;color:var(--navy)}
+.pgh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}.pgh h1{margin:0;flex:1;min-width:140px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:12px}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}}
+.tile{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:11px 13px}
+.tile small{color:var(--mut);display:block;font-size:12px}.tile b{font-size:19px;display:block;margin-top:2px}
+.tile.navy{background:var(--navy);color:#fff;border-color:var(--navy)}.tile.navy small{color:#b9c6e6}
+.tile.gold{border-left:4px solid var(--gold)}
+.pos{color:var(--ok)}.neg{color:var(--bad)}.mut{color:var(--mut)}.warn{color:var(--warn)}
+.btn{border:1px solid var(--bd);background:#fff;border-radius:9px;padding:8px 13px;cursor:pointer;font-weight:500;display:inline-flex;gap:6px;align-items:center;text-decoration:none;color:var(--tx)}
+.btn.p{background:var(--navy);color:#fff;border-color:var(--navy)}.btn.g{background:var(--gold);border-color:var(--gold);color:#241a05}
+.btn.d{color:var(--bad);border-color:#f0c9cd}.btn.sm{padding:5px 9px;font-size:13px}.btn:disabled{opacity:.5}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{flex:1}
+.chips{display:flex;gap:6px;overflow:auto;padding-bottom:4px;margin-bottom:8px}
+.chip{border:1px solid var(--bd);background:#fff;border-radius:999px;padding:5px 12px;white-space:nowrap;cursor:pointer;font-size:13px}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.badge{display:inline-block;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:600;background:#e8ecf6;color:var(--navy)}
+.badge.ok{background:#dff3e8;color:var(--ok)}.badge.bad{background:#fbe1e3;color:var(--bad)}.badge.warn{background:#fdf0d8;color:var(--warn)}
+.list .it{display:flex;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--bd);cursor:pointer}
+.list .it:last-child{border:0}.list .it .m{flex:1;min-width:0}.list .it .m b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list .it .m small{color:var(--mut)}.list .it .r{text-align:right;white-space:nowrap}
+input,select,textarea{width:100%;border:1px solid #cdd4e3;border-radius:9px;padding:9px 10px;background:#fff;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid #9db4ee;border-color:var(--navy2)}
+label.f{display:block;margin-bottom:9px;font-size:12.5px;color:var(--mut)}label.f>input,label.f>select,label.f>textarea{margin-top:3px;color:var(--tx);font-size:15px}
+.fg{display:grid;gap:0 10px;grid-template-columns:1fr 1fr}.fg .w{grid-column:1/-1}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}.tbl th{text-align:left;color:var(--mut);font-weight:600;border-bottom:2px solid var(--bd);padding:6px 6px;white-space:nowrap}
+.tbl td{border-bottom:1px solid var(--bd);padding:7px 6px;vertical-align:top}.tbl .n{text-align:right;white-space:nowrap}.tbl tfoot td{font-weight:700;border-top:2px solid var(--bd)}
+.tbl tr.clk{cursor:pointer}.tbl tr.clk:hover{background:#f6f8fd}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.mb{position:fixed;inset:0;background:rgba(10,20,45,.5);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.md{background:#fff;width:100%;max-height:96vh;display:flex;flex-direction:column;border-radius:16px 16px 0 0}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--bd)}
+.mh .x{border:0;background:#eef1f7;border-radius:50%;width:30px;height:30px;cursor:pointer}
+.mbd{padding:14px 16px;overflow:auto;flex:1}.mf{padding:10px 16px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--bd);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+@media(min-width:700px){.mb{align-items:center}.md{max-width:620px;border-radius:16px}.md.wide{max-width:860px}}
+.itm{border:1px solid var(--bd);border-radius:10px;padding:8px;margin-bottom:8px;background:#fafbfe}
+.itm .l1{display:flex;gap:6px;align-items:center}.itm .l2{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.itm .l2 label{font-size:11px;color:var(--mut)}.itm .l2 input{padding:6px 7px}
+.tot{margin-left:auto;max-width:330px}.tot div{display:flex;justify-content:space-between;padding:3px 0}.tot .g{font-size:18px;font-weight:700;border-top:2px solid var(--bd);margin-top:4px;padding-top:6px}
+.warnbox{background:#fff6e0;border:1px solid #f0d594;color:#7a5410;border-radius:9px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.empty{text-align:center;color:var(--mut);padding:26px 10px}
+.bars{display:flex;align-items:flex-end;gap:5px;height:120px;padding-top:6px}.bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.bars i{display:block;width:100%;background:var(--navy2);border-radius:4px 4px 0 0;min-height:2px}.bars span{font-size:10px;color:var(--mut);margin-top:3px}
+.hbar{height:8px;background:#e8ecf6;border-radius:4px;overflow:hidden}.hbar i{display:block;height:100%;background:var(--gold)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:84px;z-index:99;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
+#toast div{background:#1b2335;color:#fff;padding:9px 15px;border-radius:10px;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.login{max-width:380px;margin:0 auto;padding:9vh 18px}.login .logo{width:62px;height:62px;border-radius:16px;background:var(--navy);color:var(--gold);display:grid;place-items:center;font-size:30px;font-weight:800;margin-bottom:10px}
+.login h1{font-size:24px;margin:0}.login p{color:var(--mut);margin:2px 0 18px}
+.sync{font-size:12px;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.16)}
+pre.code{background:#101a33;color:#d5e1ff;border-radius:10px;padding:10px;overflow:auto;font-size:12px;max-height:240px}
+@media print{.top,.bnav,.side,#toast{display:none!important}main{margin:0;padding:0}}
 </style>
 </head>
 <body>
-  <div class="box">
-    <h1>No internet connection</h1>
-    <p>Connect to the internet and try again.</p>
-    <button onclick="location.href='https://aztersting.netlify.app'">Retry</button>
-  </div>
-</body>
-</html>
+<div id="app"></div>
+<div id="toast"></div>
+<div id="modal-root"></div>
+<script>
+/* AZ Prime Traders logo (JPEG, base64) - used on invoices & PDFs; can be replaced from Settings */
+const LOGO_B64='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';
+'use strict';
+/* ================= Zeezap Business Manager — core ================= */
+const DEF_SETTINGS={id:'main',bizName:'AZ Prime Traders',brand:'Zeezap Baby Wipes',address:'Bhiwandi, Maharashtra',phone:'',gstin:'',upi:'',
+  footer:'Thank you for your business!',gst:false,prefix:'AZT',tagline:'Wholesale & Retail Supplier of Baby Wipes, Facial Wipes, Baby Diapers, Adult Diapers',email:'azprimetraders@gmail.com',contacts:'Zeeshan Memon 8898596507 | Anis Memon 8793850572',thanks:'Thank you for choosing AZ Prime Traders.',sign:'for AZ Prime Traders',terms1:'Goods once sold will not be taken back or exchanged.',terms2:'Please retain this invoice for future reference.',dupCopy:true,partnerA:'Anis Memon',partnerB:'Zeeshan Memon',shareA:50,defaultCreditDays:15,syncUrl:'',syncKey:''};
+const COLS=['settings','users','customers','suppliers','products','sales','orders','purchases','payments','returns','expenses','adjustments','settlements'];
+const LS_KEY='zeezap_manager_db_v1', SESS_KEY='zeezap_session';
+let DB={meta:{}}; COLS.forEach(c=>DB[c]={});
+let ver=0, me=null;
+const cacheM={};
+
+/* ---------- tiny utils ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const N=v=>{v=parseFloat(v);return isFinite(v)?v:0};
+const r2=v=>Math.round((v+Number.EPSILON)*100)/100;
+const inr=v=>{v=r2(N(v));return (v<0?'-':'')+'₹'+Math.abs(v).toLocaleString('en-IN',{minimumFractionDigits:0,maximumFractionDigits:2})};
+const num=v=>r2(N(v)).toLocaleString('en-IN',{maximumFractionDigits:2});
+const pad=n=>String(n).padStart(2,'0');
+const fmtISO=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>fmtISO(new Date());
+const addDays=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return fmtISO(d)};
+const dayDiff=(a,b)=>Math.round((new Date(a+'T00:00:00')-new Date(b+'T00:00:00'))/86400000);
+const fdate=s=>{if(!s)return'';const p=s.split('-');return p[2]+'/'+p[1]+'/'+p[0].slice(2)};
+const monthStart=(s)=>(s||today()).slice(0,7)+'-01';
+const byDate=(a,b)=>(a.date||'').localeCompare(b.date||'')||(a._c||0)-(b._c||0);
+const sum=(a,f)=>a.reduce((x,y)=>x+N(f?f(y):y),0);
+const uniq=a=>[...new Set(a)];
+function periodRange(p){const t=today(),d=new Date();
+ if(p==='today')return[t,t];
+ if(p==='yesterday'){const y=addDays(t,-1);return[y,y]}
+ if(p==='week'){const dow=(d.getDay()+6)%7;return[addDays(t,-dow),t]}
+ if(p==='month')return[monthStart(),t];
+ if(p==='lastmonth'){const f=new Date(d.getFullYear(),d.getMonth()-1,1),l=new Date(d.getFullYear(),d.getMonth(),0);return[fmtISO(f),fmtISO(l)]}
+ if(p==='fy'){const y=d.getMonth()>=3?d.getFullYear():d.getFullYear()-1;return[y+'-04-01',t]}
+ return['2000-01-01','2999-12-31']}
+const inR=(date,r)=>date>=r[0]&&date<=r[1];
+
+/* ---------- storage (records carry _u timestamp; deletes are tombstones, so sync can merge) ---------- */
+function loadDB(){try{const s=localStorage.getItem(LS_KEY);if(s){const o=JSON.parse(s);COLS.forEach(c=>DB[c]=o[c]||{});DB.meta=o.meta||{}}}catch(e){console.warn('load',e)}ver++}
+let _pt=null;
+function persist(){clearTimeout(_pt);_pt=setTimeout(flushDB,150)}
+function flushDB(){try{localStorage.setItem(LS_KEY,JSON.stringify(DB))}catch(e){toast('⚠️ Storage full/blocked — backup export karo')}}
+window.addEventListener('beforeunload',flushDB);
+function all(c){const k=cacheM[c];if(k&&k.v===ver)return k.a;const a=Object.values(DB[c]).filter(r=>!r._d);cacheM[c]={v:ver,a};return a}
+const get=(c,id)=>{const r=DB[c][id];return r&&!r._d?r:null};
+function put(c,rec){if(!rec.id)rec.id=uid();if(!rec._c)rec._c=Date.now();rec._u=Date.now();DB[c][rec.id]=rec;ver++;persist();scheduleSync();return rec}
+function del(c,id){DB[c][id]={id,_d:1,_u:Date.now()};ver++;persist();scheduleSync()}
+function memo(key,fn){const k=cacheM[key];if(k&&k.v===ver)return k.a;const a=fn();cacheM[key]={v:ver,a};return a}
+const S=()=>Object.assign({},DEF_SETTINGS,get('settings','main')||{});
+function saveSettings(p){put('settings',Object.assign({},DEF_SETTINGS,get('settings','main')||{},p,{id:'main'}))}
+const isAdmin=()=>me&&me.role!=='sales';
+const isOwner=()=>me&&me.role==='owner';
+function nextNo(col,prefix){const re=new RegExp('^'+prefix.replace(/[^\w]/g,'\\$&')+'(\\d+)$');let m=0;Object.values(DB[col]).forEach(r=>{const x=re.exec(r.no||'');if(x)m=Math.max(m,+x[1])});return prefix+String(m+1).padStart(4,'0')}
+const myCode=()=>(me&&me.code)||'A';
+
+/* ---------- auth ---------- */
+async function hashPw(pw,salt){
+ try{if(window.crypto&&crypto.subtle){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
+  const b=await crypto.subtle.deriveBits({name:'PBKDF2',salt:new TextEncoder().encode(salt),iterations:60000,hash:'SHA-256'},k,256);
+  return 'p1:'+[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}}catch(e){}
+ let h=5381;const s=salt+'|'+pw;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return 'd1:'+h.toString(16)+s.length}
+async function makeUser(p){const salt=uid()+uid();return Object.assign({},p,{salt,hash:await hashPw(p.pw,salt),active:true,pw:undefined})}
+async function tryLogin(username,pw){
+ const u=all('users').find(x=>x.username.toLowerCase()===String(username).trim().toLowerCase()&&x.active!==false);
+ if(!u)return null; const h=await hashPw(pw,u.salt); return h===u.hash?u:null}
+function setSession(u,remember){try{(remember?localStorage:sessionStorage).setItem(SESS_KEY,u.id)}catch(e){}}
+function getSession(){try{return sessionStorage.getItem(SESS_KEY)||localStorage.getItem(SESS_KEY)}catch(e){return null}}
+function clearSession(){try{sessionStorage.removeItem(SESS_KEY);localStorage.removeItem(SESS_KEY)}catch(e){}}
+
+/* ---------- Google Sheets (Apps Script) record-level sync ---------- */
+let _syncT=null,_syncing=false,syncState='off';
+function scheduleSync(){if(!S().syncUrl||!me)return;clearTimeout(_syncT);_syncT=setTimeout(()=>syncNow(false),1500)}
+async function syncNow(manual){
+ const cfg=S();if(!cfg.syncUrl){if(manual)toast('Settings me Sync URL daalo');return}
+ if(_syncing)return;_syncing=true;setSyncBadge('syncing');
+ try{
+  const start=Date.now(),lastPush=DB.meta.lastPush||0;let cursor=DB.meta.cursor||0,changed=false,pushed=0;
+  const out=[];COLS.forEach(c=>Object.values(DB[c]).forEach(r=>{if((r._u||0)>lastPush)out.push({col:c,id:r.id,u:r._u,d:r._d?1:0,j:JSON.stringify(r)})}));
+  const chunks=[];for(let i=0;i<out.length;i+=250)chunks.push(out.slice(i,i+250));if(!chunks.length)chunks.push([]);
+  for(const ch of chunks){
+   const res=await fetch(cfg.syncUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({key:cfg.syncKey,cursor,records:ch})});
+   const j=await res.json();if(!j.ok)throw new Error(j.error||'sync failed');pushed+=ch.length;
+   (j.records||[]).forEach(x=>{const r=JSON.parse(x.j);const cur=DB[x.col]&&DB[x.col][r.id];if(DB[x.col]&&(!cur||(cur._u||0)<(r._u||0))){DB[x.col][r.id]=r;changed=true}});
+   cursor=j.now||cursor}
+  DB.meta.lastPush=start;DB.meta.cursor=cursor;DB.meta.lastSyncAt=Date.now();
+  if(changed){fixDupNos();ver++;if(me&&!get('users',me.id)){logout();return}if(typeof render==='function')render()}
+  persist();setSyncBadge('ok');if(manual)toast('✅ Sync ho gaya ('+pushed+' pushed'+(changed?', updates mile':'')+')');
+ }catch(e){console.warn(e);setSyncBadge('err');if(manual)toast('Sync error: '+e.message)}
+ finally{_syncing=false}}
+function setSyncBadge(s){syncState=s;const el=$('#syncb');if(el)el.textContent=({off:'',syncing:'⟳ sync…',ok:'☁ synced',err:'☁ offline'})[s]||'';if(el&&(s==='err'||s==='ok')){const n=pendingCount();if(n)el.textContent+=' ('+n+' pending)'}}
+setInterval(()=>{if(me&&S().syncUrl&&navigator.onLine!==false&&!document.hidden)syncNow(false)},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&me&&S().syncUrl)syncNow(false)});
+window.addEventListener('focus',()=>{if(me&&S().syncUrl)syncNow(false)});
+/* two owners may create the same number offline -> later one gets renumbered after sync */
+function fixDupNos(){let n=0;[['sales',()=>S().prefix+'-'],['orders',()=>'ORD-'],['purchases',()=>'PUR-'],['returns',null]].forEach(([c,pf])=>{
+ if(!pf)return;const g={};Object.values(DB[c]).forEach(r=>{if(r._d||!r.no)return;(g[r.no]=g[r.no]||[]).push(r)});
+ Object.values(g).filter(a=>a.length>1).forEach(a=>{a.sort((x,y)=>(x._c||0)-(y._c||0));a.slice(1).forEach(r=>{r.no=nextNo(c,pf());put(c,r);n++})})});
+ if(n)setTimeout(()=>toast('Duplicate bill number fix hue: '+n),300)}
+function pendingCount(){const lp=DB.meta.lastPush||0;let n=0;COLS.forEach(c=>Object.values(DB[c]).forEach(r=>{if((r._u||0)>lp)n++}));return n}
+function shareLink(){const s=S();const cfg=btoa(unescape(encodeURIComponent(JSON.stringify({u:s.syncUrl,k:s.syncKey}))));return location.href.split('#')[0].split('?')[0]+'?cfg='+encodeURIComponent(cfg)}
+window.addEventListener('online',()=>{if(me)syncNow(false)});
+
+/* ---------- file helpers ---------- */
+function downloadFile(name,data,mime){
+ const blob=data instanceof Blob?data:new Blob([data],{type:mime||'text/plain'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+function toCSV(rows){return rows.map(r=>r.map(v=>{v=String(v??'');return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(',')).join('\n')}
+function parseCSV(t){const rows=[];let r=[],f='',q=false;t=t.replace(/^﻿/,'');
+ for(let i=0;i<t.length;i++){const c=t[i];
+  if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=false}else f+=c}
+  else if(c=='"')q=true;else if(c==','||c=='\t'){r.push(f);f=''}
+  else if(c=='\n'||c=='\r'){if(c=='\r'&&t[i+1]=='\n')i++;r.push(f);f='';if(r.some(x=>x!==''))rows.push(r);r=[]}
+  else f+=c}
+ r.push(f);if(r.some(x=>x!==''))rows.push(r);return rows}
+/* ================= calculations: documents, FIFO stock, party balances, P&L ================= */
+function lineCalc(l,gstOn){const base=N(l.qty)*N(l.rate),disc=base*N(l.disc)/100,net=base-disc,tax=gstOn?net*N(l.gst)/100:0;return{base,disc,net,tax,total:net+tax}}
+function docCalc(items,flat,gstOn){let net=0,tax=0;items.forEach(l=>{const c=lineCalc(l,gstOn);net+=c.net;tax+=c.tax});
+ const g=net+tax-N(flat),total=Math.round(g);return{net:r2(net),tax:r2(tax),flat:r2(N(flat)),round:r2(total-g),total}}
+const activeSales=()=>all('sales').filter(d=>d.status!=='cancelled');
+const activePurch=()=>all('purchases').filter(d=>d.status!=='cancelled');
+const pname=id=>(get('products',id)||{}).name||'(deleted item)';
+const partyName=(kind,id)=>(get(kind==='c'?'customers':'suppliers',id)||{}).name||'(deleted)';
+const userName=id=>(get('users',id)||{}).name||'';
+
+/* ---- FIFO stock replay: purchases/openings/returns/adjustments/sales in date order ---- */
+function stockCalc(){return memo('_stock',()=>{
+ const prods=all('products'),pm={};prods.forEach(p=>pm[p.id]=p);
+ const sm={};all('sales').forEach(s=>sm[s.id]=s);
+ const ev=[];
+ prods.forEach(p=>{if(N(p.openQty)>0)ev.push({d:'0000-00-00',pr:0,c:0,k:'open',pid:p.id,qty:N(p.openQty),cost:N(p.openCost)||N(p.cost)})});
+ activePurch().forEach(d=>d.items.forEach(l=>ev.push({d:d.date,pr:1,c:d._c||0,k:'pur',pid:l.pid,qty:N(l.qty),cost:N(l.rate)*(1-N(l.disc)/100)})));
+ all('adjustments').forEach(a=>ev.push({d:a.date,pr:N(a.qty)>=0?2:6,c:a._c||0,k:'adj',pid:a.pid,qty:N(a.qty),cost:N(a.cost)||N((pm[a.pid]||{}).cost)}));
+ all('returns').forEach(r=>r.items.forEach(l=>ev.push({d:r.date,pr:r.type==='sale'?3:5,c:r._c||0,k:r.type==='sale'?'sret':'pret',rid:r.id,refId:r.refId,pid:l.pid,qty:N(l.qty)})));
+ activeSales().forEach(d=>d.items.forEach((l,i)=>ev.push({d:d.date,pr:4,c:d._c||0,k:'sale',sid:d.id,i,pid:l.pid,qty:N(l.qty)})));
+ ev.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:a.pr-b.pr||a.c-b.c);
+ const layers={},debt={},lastCost={};
+ const res={qty:{},value:{},saleCogs:{},lineCogs:{},retCogs:{}};
+ const L=pid=>layers[pid]||(layers[pid]=[]);
+ const take=(pid,q)=>{let cost=0,need=q;const ls=L(pid);
+  while(need>1e-9&&ls.length){const l=ls[0],t=Math.min(l.q,need);cost+=t*l.c;l.q-=t;need-=t;if(l.q<=1e-9)ls.shift()}
+  if(need>1e-9){const fc=lastCost[pid]!==undefined?lastCost[pid]:N((pm[pid]||{}).cost);cost+=need*fc;debt[pid]=(debt[pid]||0)+need}
+  return cost};
+ const give=(pid,q,c,setLast)=>{if(setLast!==false)lastCost[pid]=c;const d=debt[pid]||0;if(d>0){const t=Math.min(d,q);debt[pid]=d-t;q-=t}if(q>1e-9)L(pid).push({q,c})};
+ ev.forEach(e=>{
+  if(e.k==='open'||e.k==='pur'||(e.k==='adj'&&e.qty>=0))give(e.pid,Math.abs(e.qty),e.cost);
+  else if(e.k==='adj')take(e.pid,-e.qty);
+  else if(e.k==='pret')take(e.pid,e.qty);
+  else if(e.k==='sale'){const c=take(e.pid,e.qty);res.lineCogs[e.sid+'|'+e.i]=c;res.saleCogs[e.sid]=(res.saleCogs[e.sid]||0)+c}
+  else if(e.k==='sret'){let unit;const d=sm[e.refId];
+   if(d){let q=0,c=0;d.items.forEach((l,i)=>{if(l.pid===e.pid){q+=N(l.qty);c+=res.lineCogs[d.id+'|'+i]||0}});if(q>0)unit=c/q}
+   if(unit===undefined)unit=lastCost[e.pid]!==undefined?lastCost[e.pid]:N((pm[e.pid]||{}).cost);
+   give(e.pid,e.qty,unit,false);res.retCogs[e.rid]=(res.retCogs[e.rid]||0)+e.qty*unit}
+ });
+ prods.forEach(p=>{const ls=layers[p.id]||[];res.qty[p.id]=r2(sum(ls,l=>l.q)-(debt[p.id]||0));res.value[p.id]=r2(sum(ls,l=>l.q*l.c))});
+ return res})}
+const stockQty=pid=>stockCalc().qty[pid]||0;
+
+/* ---- party (customer 'c' / supplier 's') invoice-wise balances ---- */
+function partyCalc(kind,id){return memo('_party'+kind+id,()=>{
+ const isC=kind==='c',party=get(isC?'customers':'suppliers',id)||{};
+ const docs=(isC?activeSales():activePurch()).filter(d=>d.partyId===id).sort(byDate);
+ const rets=all('returns').filter(r=>r.type===(isC?'sale':'purchase')&&r.partyId===id);
+ const pays=all('payments').filter(p=>p.partyId===id&&p.partyType===kind);
+ const normal=isC?'in':'out',alloc={};let pool=0;const ids=new Set(docs.map(d=>d.id));
+ pays.forEach(p=>{if(p.type===normal){let used=0;(p.alloc||[]).forEach(a=>{if(ids.has(a.id)){alloc[a.id]=(alloc[a.id]||0)+N(a.amt);used+=N(a.amt)}});pool+=N(p.amount)-used}else pool-=N(p.amount)});
+ const retBy={};
+ rets.forEach(r=>{if(r.refId&&ids.has(r.refId))retBy[r.refId]=(retBy[r.refId]||0)+N(r.total);else pool+=N(r.total)});
+ const t=today(),cd=N(party.creditDays);
+ const rows=docs.map(d=>{let due=N(d.total)-(alloc[d.id]||0)-(retBy[d.id]||0);if(due<0){pool+=-due;due=0}
+  const age=dayDiff(t,d.date);return{doc:d,total:d.total,paid:r2(alloc[d.id]||0),ret:r2(retBy[d.id]||0),due:r2(due),age,overdue:Math.max(0,age-cd)}});
+ let openDue=N(party.opening);if(openDue<0){pool+=-openDue;openDue=0}
+ if(pool>0){const x=Math.min(pool,openDue);openDue-=x;pool-=x;for(const r of rows){if(pool<=0)break;const y=Math.min(pool,r.due);r.due=r2(r.due-y);pool-=y}}
+ let extra=0;if(pool<0){extra=-pool;pool=0}
+ const due=r2(openDue+extra+sum(rows,r=>r.due)),advance=r2(pool);
+ const open=rows.filter(r=>r.due>0.005);
+ const ag={b0:0,b1:0,b2:0,b3:0};open.forEach(r=>{const k=r.age<=15?'b0':r.age<=30?'b1':r.age<=60?'b2':'b3';ag[k]+=r.due});ag.b3+=openDue+extra;
+ const overdueAmt=sum(open.filter(r=>r.overdue>0),r=>r.due);
+ return{party,rows,open,openDue:r2(openDue),extra:r2(extra),due,advance,balance:r2(due-advance),ag,overdueAmt:r2(overdueAmt),
+  oldest:open.length?Math.max(...open.map(r=>r.age)):0}})}
+function ledgerEntries(kind,id){
+ const isC=kind==='c',party=get(isC?'customers':'suppliers',id)||{},e=[];
+ const op=N(party.opening);if(op)e.push({date:'',desc:'Opening balance',inc:op>0?op:0,dec:op<0?-op:0});
+ (isC?activeSales():activePurch()).filter(d=>d.partyId===id).forEach(d=>e.push({date:d.date,c:d._c,desc:(isC?'Invoice ':'Bill ')+d.no,inc:N(d.total),dec:0}));
+ all('returns').filter(r=>r.type===(isC?'sale':'purchase')&&r.partyId===id).forEach(r=>e.push({date:r.date,c:r._c,desc:'Return '+r.no,inc:0,dec:N(r.total)}));
+ all('payments').filter(p=>p.partyId===id&&p.partyType===kind).forEach(p=>{const normal=p.type===(isC?'in':'out');
+  e.push({date:p.date,c:p._c,desc:(normal?(isC?'Received':'Paid'):(isC?'Refund given':'Refund received'))+' ('+p.mode+')'+(p.ref?' '+p.ref:''),inc:normal?0:N(p.amount),dec:normal?N(p.amount):0})});
+ e.sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.c||0)-(b.c||0));
+ let bal=0;e.forEach(x=>{bal+=x.inc-x.dec;x.bal=r2(bal)});return e}
+function lastRate(cid,pid){const ds=activeSales().filter(d=>d.partyId===cid).sort(byDate).reverse();
+ for(const d of ds){const l=d.items.find(x=>x.pid===pid);if(l)return N(l.rate)}return null}
+const allDues=kind=>all(kind==='c'?'customers':'suppliers').map(p=>({p,c:partyCalc(kind,p.id)}));
+
+/* ---- profit & loss for a period ---- */
+function plCalc(r){const sc=stockCalc();
+ const sales=activeSales().filter(d=>inR(d.date,r)),rets=all('returns').filter(x=>x.type==='sale'&&inR(x.date,r));
+ const gross=sum(sales,d=>d.net),flat=sum(sales,d=>d.flat),retNet=sum(rets,d=>d.net);
+ const cogs=sum(sales,d=>sc.saleCogs[d.id]||0),retCogs=sum(rets,d=>sc.retCogs[d.id]||0);
+ const netSales=gross-flat-retNet,cogsNet=cogs-retCogs,gp=netSales-cogsNet;
+ const exps=all('expenses').filter(e=>inR(e.date,r)),expTotal=sum(exps,e=>e.amount);
+ return{sales,rets,exps,gross:r2(gross),flat:r2(flat),retNet:r2(retNet),netSales:r2(netSales),cogs:r2(cogs),retCogs:r2(retCogs),cogsNet:r2(cogsNet),
+  gp:r2(gp),margin:netSales?gp/netSales*100:0,expTotal:r2(expTotal),net:r2(gp-expTotal),tax:r2(sum(sales,d=>d.tax))}}
+function expByCat(exps){const m={};exps.forEach(e=>m[e.category||'Other']=(m[e.category||'Other']||0)+N(e.amount));return Object.entries(m).sort((a,b)=>b[1]-a[1])}
+function collectedIn(r){return sum(all('payments').filter(p=>p.type==='in'&&p.partyType==='c'&&inR(p.date,r)),p=>p.amount)}
+function paidModes(r){const m={};all('payments').filter(p=>inR(p.date,r)).forEach(p=>{const k=p.mode||'Cash';m[k]=m[k]||{in:0,out:0};m[k][p.type]+=N(p.amount)});
+ all('expenses').filter(e=>inR(e.date,r)&&e.paidBy==='business').forEach(e=>{const k=e.mode||'Cash';m[k]=m[k]||{in:0,out:0};m[k].out+=N(e.amount)});return m}
+/* ================= tiny dependency-free PDF writer (Helvetica + JPEG logo) ================= */
+const HW=[278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584];
+const HB=[278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584];
+class Pdf{
+ constructor(){this.pages=[];this.W=595;this.H=842;this.imgs=[];this.newPage()}
+ newPage(){this.cur=[];this.pages.push(this.cur)}
+ clean(s){return String(s??'').replace(/₹/g,'Rs.').replace(/[–—]/g,'-').replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[^\x20-\x7e]/g,'?')}
+ w(s,size,bold){s=this.clean(s);const t=bold?HB:HW;let w=0;for(let i=0;i<s.length;i++)w+=t[s.charCodeAt(i)-32]||556;return w*size/1000}
+ fit(s,size,bold,max){s=this.clean(s);if(this.w(s,size,bold)<=max)return s;while(s.length>1&&this.w(s+'..',size,bold)>max)s=s.slice(0,-1);return s+'..'}
+ col(c){return c?c.map(v=>(v/255).toFixed(3)).join(' '):'0 0 0'}
+ text(x,y,s,o={}){const size=o.size||10,bold=!!o.bold;s=this.clean(s);const w=this.w(s,size,bold);
+  if(o.align==='r')x-=w;else if(o.align==='c')x-=w/2;
+  const e=s.replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+  this.cur.push(`BT ${this.col(o.color)} rg /${o.italic?'F3':bold?'F2':'F1'} ${size} Tf ${x.toFixed(2)} ${(this.H-y).toFixed(2)} Td (${e}) Tj ET`)}
+ line(x1,y1,x2,y2,w,c){this.cur.push(`${this.col(c||[190,196,210])} RG ${w||0.6} w ${x1.toFixed(2)} ${(this.H-y1).toFixed(2)} m ${x2.toFixed(2)} ${(this.H-y2).toFixed(2)} l S`)}
+ dash(x1,y1,x2,y2,w,c){this.cur.push(`[4 3] 0 d`);this.line(x1,y1,x2,y2,w,c);this.cur.push(`[] 0 d`)}
+ rect(x,y,w,h,fill,stroke,lw){let o='';if(fill)o+=`${this.col(fill)} rg `;if(stroke)o+=`${this.col(stroke)} RG ${lw||0.6} w `;
+  this.cur.push(`${o}${x.toFixed(2)} ${(this.H-y-h).toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re ${fill&&stroke?'B':fill?'f':'S'}`)}
+ addImage(b64){const bin=atob(b64);let w=0,h=0;
+  for(let i=2;i<bin.length;){if(bin.charCodeAt(i)!==0xFF){i++;continue}const m=bin.charCodeAt(i+1);
+   if(m>=0xC0&&m<=0xC3){h=bin.charCodeAt(i+5)<<8|bin.charCodeAt(i+6);w=bin.charCodeAt(i+7)<<8|bin.charCodeAt(i+8);break}
+   i+=2+(bin.charCodeAt(i+2)<<8|bin.charCodeAt(i+3))}
+  this.imgs.push({bin,w,h});return this.imgs.length-1}
+ image(i,x,y,w,h){this.cur.push(`q ${w} 0 0 ${h} ${x.toFixed(2)} ${(this.H-y-h).toFixed(2)} cm /Im${i+1} Do Q`)}
+ out(){const objs=[];const add=s=>{objs.push(s);return objs.length};
+  add('<< /Type /Catalog /Pages 2 0 R >>');add('');
+  add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>');
+  const xo=this.imgs.map((im,i)=>'/Im'+(i+1)+' '+add(`<< /Type /XObject /Subtype /Image /Width ${im.w} /Height ${im.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${im.bin.length} >>\nstream\n${im.bin}\nendstream`)+' 0 R').join(' ');
+  const kids=[];this.pages.forEach(p=>{const s=p.join('\n');const c=add(`<< /Length ${s.length} >>\nstream\n${s}\nendstream`);
+   const pg=add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${this.W} ${this.H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> /XObject << ${xo} >> >> /Contents ${c} 0 R >>`);kids.push(pg+' 0 R')});
+  objs[1]=`<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${kids.length} >>`;
+  let s='%PDF-1.4\n';const off=[];objs.forEach((o,i)=>{off.push(s.length);s+=`${i+1} 0 obj\n${o}\nendobj\n`});
+  const x=s.length;s+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n`+off.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+`trailer\n<< /Size ${objs.length+1} /Root 1 0 R >>\nstartxref\n${x}\n%%EOF`;
+  const u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i)&255;return u}
+}
+const NAVY=[18,40,90],GOLD=[200,150,62],GREY=[102,112,138],LIGHT=[238,241,248];
+const INK=[17,17,17],INK2=[51,51,51],BORDER=[68,68,68],BEIGE=[240,237,228],BEIGE_TX=[107,98,87];
+
+/* letterhead used on statements & reports */
+function pdfHeader(p,title,right){const s=S(),img=p.addImage(s.logo||LOGO_B64);
+ p.image(img,40,16,54,54);
+ p.text(104,38,s.bizName,{size:17,bold:true,color:INK});
+ let y=50;if(s.tagline){p.text(104,y,p.fit(s.tagline,8,false,330),{size:8,color:GREY});y+=11}
+ if(s.contacts){p.text(104,y,p.fit(s.contacts,8,false,330),{size:8,color:GREY});y+=11}
+ p.text(555,38,title,{size:15,bold:true,align:'r',color:NAVY});
+ (right||[]).forEach((t,i)=>p.text(555,54+i*12,t,{size:9.5,align:'r',color:i?GREY:INK,bold:!i}));
+ p.line(40,80,555,80,1.3,[34,34,34]);return 100}
+
+/* ---- invoice in the AZ Prime Traders bill format: original + duplicate copy on one A4 page ---- */
+function fmtPhone(ph){const d=String(ph||'').replace(/\D/g,'');return d.length===10?d.slice(0,5)+' '+d.slice(5):String(ph||'')}
+function invoicePdf(d){
+ const s=S(),p=new Pdf(),c=get('customers',d.partyId)||{},gst=s.gst,img=p.addImage(s.logo||LOGO_B64);
+ const L=24,R=572,COLS=[24,79,293,391,473,572];
+ const rows=d.items.map(l=>[num(l.qty),l.name||pname(l.pid),(get('products',l.pid)||{}).hsn||'',num(l.rate),num(lineCalc(l,false).net)]);
+ const row=partyCalc('c',d.partyId).rows.find(r=>r.doc.id===d.id);
+ const tot=[['Total Amount',num(d.net)]];
+ if(N(d.flat))tot.push(['Discount','-'+num(d.flat)]);
+ if(gst&&N(d.tax))tot.push(['GST',num(d.tax)]);
+ tot.push(['Shipping',N(d.ship)?num(d.ship):'-']);
+ if(N(d.round))tot.push(['Round off',num(d.round)]);
+ const grand=['Grand Total','Rs. '+num(d.total)],extra=[];
+ if(row&&row.due>0.005){extra.push(['Received',num(d.total-row.ret-row.due)]);extra.push(['Balance Due','Rs. '+num(row.due)])}
+ const nT=tot.length+1+extra.length;
+ const endCopy=dup=>182+(dup?20:0)+22+rows.length*22+nT*23+50;
+ function drawCopy(y0,dup){
+  const sh=dup?20:0;
+  p.image(img,L,y0+33,82,82);
+  p.text(346,y0+63,s.bizName,{size:20,bold:true,align:'c',color:INK});
+  [s.tagline,s.email?'Email:- '+s.email:'',s.contacts].filter(Boolean).forEach((t,i)=>p.text(346,y0+77+i*12.5,t,{size:9.5,align:'c',color:INK}));
+  p.line(L,y0+126,R,y0+126,1.5,[34,34,34]);
+  if(dup)p.text(R,y0+144,'DUPLICATE INVOICE',{size:10,italic:true,align:'r',color:INK});
+  const by=y0+145+sh,lab=(t,y,bold)=>{p.text(L,y,t,{size:11,bold:true,color:INK})};
+  p.text(L,by,'To:-',{size:11,bold:true,color:INK});p.text(L+p.w('To:- ',11,true),by,p.fit(c.name||'',11,false,330),{size:11,color:INK});
+  p.text(L,by+13,'Address:- '+(c.address||c.area||''),{size:11,color:INK});
+  p.text(L,by+26,'Phone:- '+fmtPhone(c.phone),{size:11,color:INK});
+  const inv=(label,val,y)=>{p.text(R,y,val,{size:11,color:INK,align:'r'});p.text(R-p.w(val,11,false)-6,y,label,{size:11,bold:true,align:'r',color:INK})};
+  inv('INV NO',d.no,by);inv('INV DATE',fdate4(d.date),by+13);
+  let ty=y0+182+sh;
+  const hdr=()=>{['QTY','DESCRIPTION','HSN/SAC','RATE','AMOUNT'].forEach((h,i)=>{p.rect(COLS[i],ty,COLS[i+1]-COLS[i],22,BEIGE,BORDER,1.1);p.text(COLS[i]+6,ty+15,h,{size:11,bold:true,color:BEIGE_TX})});ty+=22};
+  hdr();
+  rows.forEach(r=>{if(ty>790){p.newPage();ty=40;hdr()}
+   for(let i=0;i<5;i++){p.rect(COLS[i],ty,COLS[i+1]-COLS[i],22,null,BORDER,1.1);p.text(COLS[i]+6,ty+15,i===1?p.fit(r[i],11,false,COLS[2]-COLS[1]-10):r[i],{size:11,color:INK})}ty+=22});
+  const trow=(a,b,bold,fill)=>{if(ty>800){p.newPage();ty=40}p.rect(L,ty,325,23,fill,BORDER,1.1);p.rect(349,ty,223,23,fill,BORDER,1.1);p.text(L+6,ty+16,a,{size:11,bold,color:INK});p.text(R-8,ty+16,b,{size:11,bold,align:'r',color:INK});ty+=23};
+  tot.forEach(t=>trow(t[0],t[1]));trow(grand[0],grand[1],true,BEIGE);extra.forEach((t,i)=>trow(t[0],t[1],i===extra.length-1));
+  p.text(L,ty+21,s.thanks||'',{size:10,bold:true,color:INK2});p.text(R,ty+21,s.sign||'',{size:10,align:'r',color:INK2});
+  [s.terms1,s.terms2].filter(Boolean).forEach((t,i)=>p.text(L,ty+34+i*13,t,{size:10,color:INK2}));
+  return ty+50}
+ const e1=endCopy(false),P=Math.max(354,e1+8),dup=s.dupCopy!==false&&s.dupCopy!=='0';
+ drawCopy(0,false);
+ if(dup){if(P+endCopy(true)<=832){p.dash(L,(e1+P+33)/2,R,(e1+P+33)/2,0.8,[120,120,120]);drawCopy(P,true)}else{p.newPage();drawCopy(0,true)}}
+ return{bytes:p.out(),name:'Invoice-'+d.no.replace(/[^\w-]/g,'_')+'.pdf'}}
+const fdate4=s=>{if(!s)return'';const q=s.split('-');return q[2]+'/'+q[1]+'/'+q[0]};
+
+/* generic table PDF: used for statements and reports */
+function tablePdf({title,sub,cols,rows,foot,name}){
+ const p=new Pdf();let y=pdfHeader(p,title,sub||[]);const tot=sum(cols,c=>c.w),W=515;let x=40;cols.forEach(c=>{c.px=x;c.pw=c.w/tot*W;x+=c.pw});
+ const head=()=>{p.rect(40,y-11,W,18,NAVY);cols.forEach(c=>p.text(c.a==='r'?c.px+c.pw-3:c.px+3,y+1,c.h,{size:8.5,bold:true,color:[255,255,255],align:c.a}));y+=18};
+ head();
+ const draw=(r,bold)=>{if(y>800){p.newPage();y=50;head()}
+  cols.forEach((c,i)=>{const v=String(r[i]??'');p.text(c.a==='r'?c.px+c.pw-3:c.px+3,y+1,c.a==='r'?v:p.fit(v,8.5,bold,c.pw-6),{size:8.5,bold,align:c.a})});
+  p.line(40,y+5,555,y+5,0.35);y+=15};
+ rows.forEach(r=>draw(r,false));if(foot){y+=2;p.line(40,y-8,555,y-8,1,NAVY);draw(foot,true)}
+ p.text(555,832,'Generated '+fdate(today()),{size:7.5,color:[160,168,185],align:'r'});
+ return{bytes:p.out(),name:name||'report.pdf'}}
+
+async function sharePdf(res,text){
+ const{bytes,name}=res,blob=new Blob([bytes],{type:'application/pdf'});
+ if(window.Android&&typeof Android.sharePdf==='function'){try{let b='';for(let i=0;i<bytes.length;i+=8192)b+=String.fromCharCode.apply(null,bytes.subarray(i,i+8192));Android.sharePdf(btoa(b),name);return}catch(e){console.warn(e)}}
+ try{const f=new File([blob],name,{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name,text:text||''});return}}catch(e){if(e&&e.name==='AbortError')return}
+ downloadFile(name,blob)}
+/* ================= UI framework: toast, modal, router, shell, login ================= */
+const A={},V={},LISTS={},UI={q:{},f:{}};
+const NAV=[
+ {id:'dashboard',ic:'🏠',t:'Dashboard',r:'all',s:'Home'},
+ {id:'orders',ic:'📝',t:'Orders & Delivery',r:'all',s:'Orders'},
+ {id:'sales',ic:'🧾',t:'Sales Invoices',r:'all',s:'Sales'},
+ {id:'customers',ic:'🏪',t:'Customers',r:'all',s:'Customers'},
+ {id:'payments',ic:'💰',t:'Payments',r:'all',s:'Payments'},
+ {id:'products',ic:'📦',t:'Products & Stock',r:'all',s:'Stock'},
+ {id:'purchases',ic:'🚚',t:'Purchases',r:'admin',s:'Purchase'},
+ {id:'suppliers',ic:'🏭',t:'Suppliers',r:'admin',s:'Suppliers'},
+ {id:'returns',ic:'↩️',t:'Returns',r:'all',s:'Returns'},
+ {id:'expenses',ic:'💸',t:'Expenses',r:'admin',s:'Expenses'},
+ {id:'reports',ic:'📊',t:'Reports',r:'admin',s:'Reports'},
+ {id:'settings',ic:'⚙️',t:'Settings',r:'all',s:'Settings'}];
+
+function toast(msg){const t=document.createElement('div');t.textContent=msg;$('#toast').appendChild(t);setTimeout(()=>t.remove(),2800)}
+function modal(title,body,foot,opts={}){
+ const el=document.createElement('div');el.className='mb';
+ el.innerHTML=`<div class="md ${opts.wide?'wide':''}"><div class="mh"><b>${title}</b><button class="x" data-act="close">✕</button></div><div class="mbd">${body}</div>${foot?`<div class="mf">${foot}</div>`:''}</div>`;
+ $('#modal-root').appendChild(el);
+ el.addEventListener('mousedown',e=>{if(e.target===el&&!opts.sticky)closeModal(el)});return el}
+function closeModal(el){if(el&&el.parentNode)el.remove()}
+function closeAllModals(){$('#modal-root').innerHTML=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=$$('#modal-root .mb');if(m.length)closeModal(m[m.length-1])}});
+A.close=(d,t)=>closeModal(t.closest('.mb'));
+function askConfirm(msg,ok='Yes'){return new Promise(res=>{
+ const m=modal('Confirm',`<p style="margin:0">${msg}</p>`,`<button class="btn" data-act="cfNo">Cancel</button><button class="btn p" data-act="cfYes">${ok}</button>`,{sticky:true});
+ m.querySelector('[data-act=cfNo]').onclick=()=>{closeModal(m);res(false)};m.querySelector('[data-act=cfYes]').onclick=()=>{closeModal(m);res(true)}})}
+function askInput(title,label,val=''){return new Promise(res=>{
+ const m=modal(title,`<label class="f">${label}<input name="v" value="${esc(val)}"></label>`,`<button class="btn" data-act="x1">Cancel</button><button class="btn p" data-act="x2">OK</button>`,{sticky:true});
+ m.querySelector('[data-act=x1]').onclick=()=>{closeModal(m);res(null)};m.querySelector('[data-act=x2]').onclick=()=>{const v=m.querySelector('[name=v]').value;closeModal(m);res(v)}})}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const f=A[t.dataset.act];if(f){f(t.dataset,t,e)}});
+const fv=el=>{const o={};$$('[name]',el).forEach(i=>{o[i.name]=i.type==='checkbox'?i.checked:i.value});return o};
+const fld=(label,name,val='',type='text',attr='',cls='')=>`<label class="f ${cls}">${label}<input name="${name}" type="${type}" value="${esc(val)}" ${type==='number'?'inputmode="decimal" step="any"':''} ${attr}></label>`;
+const sel=(label,name,opts,val,attr='',cls='')=>`<label class="f ${cls}">${label}<select name="${name}" ${attr}>${opts.map(o=>{const[v,t]=Array.isArray(o)?o:[o,o];return`<option value="${esc(v)}" ${String(v)===String(val)?'selected':''}>${esc(t)}</option>`}).join('')}</select></label>`;
+const pgh=(t,acts)=>`<div class="pgh"><h1>${t}</h1>${acts||''}</div>`;
+const chips=(page,key,opts,cur)=>`<div class="chips">${opts.map(([v,t])=>`<span class="chip ${cur===v?'on':''}" data-act="chip" data-k="${key}" data-v="${v}">${t}</span>`).join('')}</div>`;
+A.chip=d=>{UI.f[d.k]=d.v;render()};
+const searchBox=(page,ph)=>`<input type="search" placeholder="${ph||'Search…'}" value="${esc(UI.q[page]||'')}" oninput="UI.q['${page}']=this.value;refreshList('${page}')" style="margin-bottom:8px">`;
+function refreshList(page){const el=$('#list');if(el&&LISTS[page])el.innerHTML=LISTS[page]()}
+const badge=(t,c)=>`<span class="badge ${c||''}">${t}</span>`;
+const empty=t=>`<div class="empty">${t}</div>`;
+const go=p=>{location.hash='#/'+p};
+const waLink=(phone,text)=>{let p=String(phone||'').replace(/\D/g,'');if(p.length===10)p='91'+p;return'https://wa.me/'+p+'?text='+encodeURIComponent(text)};
+function table(cols,rows,foot,opt={}){
+ return`<div class="scroll"><table class="tbl"><thead><tr>${cols.map(c=>`<th class="${c.n?'n':''}">${c.h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr ${r._a?`class="clk" data-act="${r._a}" data-id="${r._id||''}" data-k="${r._k||''}"`:''}>${cols.map((c,i)=>`<td class="${c.n?'n':''}">${r[i]}</td>`).join('')}</tr>`).join('')||`<tr><td colspan="${cols.length}" class="empty">No data</td></tr>`}</tbody>${foot?`<tfoot><tr>${foot.map((f,i)=>`<td class="${cols[i].n?'n':''}">${f}</td>`).join('')}</tr></tfoot>`:''}</table></div>`}
+
+/* ---------- shell / router ---------- */
+let _lastHash='';
+function render(){
+ const root=$('#app');
+ if(!me){root.innerHTML=loginView();return}
+ const h=location.hash.replace(/^#\/?/,'')||'dashboard';
+ const[page,...args]=h.split('/');const cur=V[page]?page:'dashboard';
+ const nav=NAV.filter(n=>n.r==='all'||isAdmin());
+ if(!nav.some(n=>n.id===cur)&&!['party','report','settlement'].includes(cur)){go('dashboard');return}
+ const y=window.scrollY;let body;
+ try{body=V[cur](...args.map(decodeURIComponent))}catch(e){console.error(e);body=`<div class="card neg">Error: ${esc(e.message)}</div>`}
+ const ni=nav.find(n=>n.id===cur)||nav.find(n=>n.id===(cur==='party'?(args[0]==='s'?'suppliers':'customers'):cur==='report'?'reports':cur));
+ const bn=['dashboard','orders','sales','customers'].map(id=>nav.find(n=>n.id===id)).filter(Boolean);
+ root.innerHTML=`<aside class="side"><h2>${esc(S().bizName)}<small>${esc(S().brand||'')}</small></h2>
+  ${nav.map(n=>`<a class="${ni&&ni.id===n.id?'on':''}" href="#/${n.id}"><span>${n.ic}</span>${n.t}</a>`).join('')}
+  <div style="flex:1"></div><div style="padding:8px 10px;font-size:13px;opacity:.85">${esc(me.name)} · ${me.role}</div><a data-act="logout"><span>🚪</span>Logout</a></aside>
+  <div class="top"><b>${ni?ni.t:'Zeezap'}</b><span class="sync" id="syncb"></span><button data-act="logout">Logout</button></div>
+  <main>${body}</main>
+  <nav class="bnav">${bn.map(n=>`<a class="${ni&&ni.id===n.id?'on':''}" href="#/${n.id}"><i>${n.ic}</i>${n.s}</a>`).join('')}<a data-act="moreMenu"><i>☰</i>More</a></nav>`;
+ setSyncBadge(syncState);
+ if(h===_lastHash)window.scrollTo(0,y);else window.scrollTo(0,0);_lastHash=h}
+window.addEventListener('hashchange',()=>{closeAllModals();render()});
+A.moreMenu=()=>{const nav=NAV.filter(n=>n.r==='all'||isAdmin());
+ const m=modal('Menu',`<div class="grid g2" style="grid-template-columns:repeat(2,1fr)">${nav.map(n=>`<a class="tile" style="text-decoration:none;color:inherit" href="#/${n.id}"><b>${n.ic} ${n.t}</b></a>`).join('')}</div>`);
+ m.addEventListener('click',e=>{if(e.target.closest('a'))closeModal(m)})};
+function logout(){clearSession();me=null;closeAllModals();render()}
+A.logout=logout;
+
+/* ---------- login / first-run setup ---------- */
+function loginView(){
+ const first=!all('users').length;
+ if(first)return`<div class="login"><div class="logo">Z</div><h1>Welcome 👋</h1><p>${S().syncUrl?'Google Sheet connected ✓ — data load ho raha hai…':'Pehli baar setup — owner account banao.'}</p>
+  <div class="card">${fld('Business name','biz',DEF_SETTINGS.bizName)}${fld('Your name','name','')}${fld('Username','username','','text','autocapitalize="none" autocomplete="username"')}${fld('Password (min 4)','pw','','password','autocomplete="new-password"')}
+  <button class="btn p" style="width:100%;justify-content:center" data-act="setupOwner">Create & Start</button></div>
+  <div class="card"><b>Dusra phone/device?</b><p class="mut" style="margin:4px 0 8px;font-size:13px">Pehle device ka Google Sheet sync URL daalo, saara data & users aa jayenge.</p>
+  ${fld('Sync URL','syncUrl','')}${fld('Sync key','syncKey','')}<button class="btn" data-act="connectSync">Connect & Load</button></div></div>`;
+ return`<div class="login"><div class="logo">Z</div><h1>${esc(S().bizName)}</h1><p>${esc(S().brand||'Business Manager')} — login</p>
+  <div class="card"><form onsubmit="return false">${fld('Username','username','','text','autocapitalize="none" autocomplete="username"')}${fld('Password','pw','','password','autocomplete="current-password"')}
+  <label class="f" style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="remember" checked style="width:auto"> Is device par login yaad rakho</label>
+  <button class="btn p" style="width:100%;justify-content:center" data-act="doLogin">Login</button></form></div></div>`}
+A.setupOwner=async(d,t)=>{const v=fv(t.closest('.login'));
+ if(!v.name.trim()||!v.username.trim()||v.pw.length<4){toast('Naam, username aur 4+ char password chahiye');return}
+ saveSettings({bizName:v.biz||DEF_SETTINGS.bizName});
+ const u=await makeUser({id:uid(),name:v.name.trim(),username:v.username.trim(),pw:v.pw,role:'owner',code:v.name.trim()[0].toUpperCase()});put('users',u);
+ me=u;setSession(u,true);location.hash='#/dashboard';render()};
+A.doLogin=async(d,t)=>{const v=fv(t.closest('.login'));const u=await tryLogin(v.username,v.pw);
+ if(!u){toast('Username ya password galat hai');return}me=u;setSession(u,v.remember);location.hash='#/dashboard';render();syncNow(false)};
+A.connectSync=async(d,t)=>{const v=fv(t.closest('.login'));if(!v.syncUrl){toast('URL daalo');return}
+ saveSettings({syncUrl:v.syncUrl.trim(),syncKey:v.syncKey.trim()});DB.settings.main._u=0;DB.meta.cursor=0;DB.meta.lastPush=Date.now();toast('Loading…');await syncNow(true);render()};
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!me){const b=$('[data-act=doLogin]');if(b)b.click()}});
+/* ================= views A: dashboard, parties, products ================= */
+function formModal(title,body,onSave,o={}){
+ const m=modal(title,body,`${o.left||''}<span class="sp"></span><button class="btn" data-act="close">Cancel</button>${o.extra||''}<button class="btn p" data-act="mfSave">${o.label||'Save'}</button>`,o);m._save=onSave;return m}
+A.mfSave=async(d,t)=>{const m=t.closest('.mb');if(!m._save)return;const r=await m._save(fv(m),m);if(r!==false)closeModal(m)};
+const partyLabel=p=>p.name+(p.area?' ('+p.area+')':'');
+const partyList=(kind,id='dl-party')=>`<datalist id="${id}">${all(kind==='c'?'customers':'suppliers').map(p=>`<option value="${esc(partyLabel(p))}">`).join('')}</datalist>`;
+function resolveParty(kind,label){const ps=all(kind==='c'?'customers':'suppliers');label=String(label||'').trim().toLowerCase();if(!label)return null;
+ return ps.find(p=>partyLabel(p).toLowerCase()===label)||(ps.filter(p=>p.name.toLowerCase()===label).length===1?ps.find(p=>p.name.toLowerCase()===label):null)}
+const dueTxt=b=>b>0.005?`<b class="neg">${inr(b)}</b>`:b<-0.005?`<b class="pos">${inr(-b)} adv</b>`:`<span class="mut">₹0</span>`;
+
+/* ---------------- dashboard ---------------- */
+V.dashboard=()=>{
+ const t=today(),ms=monthStart(),adm=isAdmin();
+ let sales=activeSales();if(!adm)sales=sales.filter(d=>d.by===me.id);
+ let pays=all('payments').filter(p=>p.type==='in'&&p.partyType==='c');if(!adm)pays=pays.filter(p=>p.by===me.id);
+ const sToday=sum(sales.filter(d=>d.date===t),d=>d.total),sMonth=sum(sales.filter(d=>d.date>=ms),d=>d.total);
+ const cToday=sum(pays.filter(p=>p.date===t),p=>p.amount),cMonth=sum(pays.filter(p=>p.date>=ms),p=>p.amount);
+ const dues=allDues('c'),recv=sum(dues,x=>x.c.due),overdue=sum(dues,x=>x.c.overdueAmt);
+ const pend=all('orders').filter(o=>o.status==='pending');
+ let admin='';
+ if(adm){const pl=plCalc([ms,t]),pay=sum(allDues('s'),x=>x.c.due),sc=stockCalc(),sv=sum(Object.values(sc.value)),low=all('products').filter(p=>stockQty(p.id)<=N(p.minStock)&&N(p.minStock)>0);
+  admin=`<div class="grid" style="margin-top:10px"><div class="tile gold"><small>Profit this month (FIFO)</small><b class="${pl.net>=0?'pos':'neg'}">${inr(pl.net)}</b></div>
+   <div class="tile"><small>Gross profit · margin</small><b>${inr(pl.gp)} <small style="display:inline">${pl.margin.toFixed(1)}%</small></b></div>
+   <div class="tile"><small>Payable to suppliers</small><b>${inr(pay)}</b></div><div class="tile"><small>Stock value (FIFO cost)</small><b>${inr(sv)}</b></div></div>`;
+  UI._low=low}
+ const days=[];for(let i=13;i>=0;i--){const d=addDays(t,-i);days.push([d,sum(sales.filter(x=>x.date===d),x=>x.total)])}
+ const mx=Math.max(1,...days.map(x=>x[1]));
+ const top=dues.filter(x=>x.c.balance>0).sort((a,b)=>b.c.balance-a.c.balance).slice(0,6);
+ const recent=[...sales].sort(byDate).reverse().slice(0,6);
+ const low=adm?(UI._low||[]).slice(0,6):[];
+ return`<div class="row" style="margin-bottom:10px"><button class="btn p" data-act="newDoc" data-k="order">📝 New Order</button><button class="btn g" data-act="newDoc" data-k="sale">🧾 New Invoice</button><button class="btn" data-act="newPay" data-t="in">💰 Receive Payment</button></div>
+ <div class="grid"><div class="tile navy"><small>${adm?'Sales today':'My sales today'}</small><b>${inr(sToday)}</b></div><div class="tile navy"><small>Cash received today</small><b>${inr(cToday)}</b></div>
+ <div class="tile"><small>Sales this month</small><b>${inr(sMonth)}</b></div><div class="tile"><small>Received this month</small><b>${inr(cMonth)}</b></div></div>
+ <div class="grid" style="margin-top:10px"><div class="tile gold"><small>Market me baaki (receivable)</small><b class="neg">${inr(recv)}</b></div><div class="tile"><small>Overdue (credit days paar)</small><b class="${overdue>0?'neg':''}">${inr(overdue)}</b></div>
+ <div class="tile"><small>Pending orders</small><b>${pend.length}</b></div><div class="tile"><small>Pending order value</small><b>${inr(sum(pend,o=>o.total))}</b></div></div>${admin}
+ <h2 class="sec">Last 14 days sales</h2><div class="card"><div class="bars">${days.map(([d,v])=>`<div title="${fdate(d)}: ${inr(v)}"><i style="height:${Math.max(2,v/mx*100)}%"></i><span>${d.slice(8)}</span></div>`).join('')}</div></div>
+ <div class="grid g2" style="grid-template-columns:1fr">
+ <div><h2 class="sec">Sabse zyada baaki</h2><div class="card list">${top.map(x=>`<div class="it" data-act="openParty" data-k="c" data-id="${x.p.id}"><div class="m"><b>${esc(x.p.name)}</b><small>${esc(x.p.area||'')}${x.c.oldest?' · oldest '+x.c.oldest+'d':''}</small></div><div class="r">${dueTxt(x.c.balance)}${x.c.overdueAmt>0?`<br>${badge('overdue','bad')}`:''}</div></div>`).join('')||empty('Koi baaki nahi 🎉')}</div></div>
+ <div><h2 class="sec">Pending orders</h2><div class="card list">${pend.slice(0,6).map(o=>`<div class="it" data-act="orderView" data-id="${o.id}"><div class="m"><b>${esc(partyName('c',o.partyId))}</b><small>${o.no} · ${fdate(o.date)}</small></div><div class="r"><b>${inr(o.total)}</b></div></div>`).join('')||empty('No pending orders')}</div></div>
+ ${adm?`<div><h2 class="sec">Low stock</h2><div class="card list">${low.map(p=>`<div class="it" data-act="editProduct" data-id="${p.id}"><div class="m"><b>${esc(p.name)}</b><small>min ${num(p.minStock)}</small></div><div class="r"><b class="neg">${num(stockQty(p.id))}</b></div></div>`).join('')||empty('Stock theek hai')}</div></div>`:''}
+ <div><h2 class="sec">Recent invoices</h2><div class="card list">${recent.map(d=>`<div class="it" data-act="docView" data-k="sale" data-id="${d.id}"><div class="m"><b>${esc(partyName('c',d.partyId))}</b><small>${d.no} · ${fdate(d.date)}</small></div><div class="r"><b>${inr(d.total)}</b></div></div>`).join('')||empty('No invoices yet')}</div></div></div>`};
+A.newDoc=d=>openDoc(d.k,{});
+A.newPay=d=>openPayment({type:d.t});
+A.openParty=d=>go('party/'+d.k+'/'+d.id);
+
+/* ---------------- customers & suppliers ---------------- */
+function partyListHtml(kind){
+ const q=(UI.q[kind==='c'?'customers':'suppliers']||'').toLowerCase(),f=UI.f[kind+'due']||'all',area=UI.f.cArea||'';
+ let rows=allDues(kind).filter(x=>!q||(x.p.name+' '+(x.p.phone||'')+' '+(x.p.area||'')+' '+(x.p.contact||'')).toLowerCase().includes(q));
+ if(kind==='c'&&area)rows=rows.filter(x=>x.p.area===area);
+ if(f==='due')rows=rows.filter(x=>x.c.balance>0.005);if(f==='overdue')rows=rows.filter(x=>x.c.overdueAmt>0);
+ rows.sort((a,b)=>f==='all'?a.p.name.localeCompare(b.p.name):b.c.balance-a.c.balance);
+ return rows.map(x=>`<div class="it" data-act="openParty" data-k="${kind}" data-id="${x.p.id}"><div class="m"><b>${esc(x.p.name)}</b><small>${esc([x.p.area,x.p.phone].filter(Boolean).join(' · '))}</small></div>
+  <div class="r">${dueTxt(x.c.balance)}${x.c.overdueAmt>0?`<br><small class="neg">${x.c.oldest}d old</small>`:''}</div></div>`).join('')||empty(kind==='c'?'Koi customer nahi mila':'Koi supplier nahi mila')}
+LISTS.customers=()=>partyListHtml('c');LISTS.suppliers=()=>partyListHtml('s');
+function partyPage(kind){const isC=kind==='c',pg=isC?'customers':'suppliers';
+ const areas=uniq(all('customers').map(c=>c.area).filter(Boolean)).sort();
+ return pgh(isC?'Customers':'Suppliers',`<button class="btn p" data-act="addParty" data-k="${kind}">+ Add</button>${isAdmin()?`<button class="btn" data-act="exportParties" data-k="${kind}">⬇ CSV</button>`:''}`)+
+ `<div class="row" style="margin-bottom:6px"><div class="sp">${searchBox(pg,'Name / phone / area search')}</div>${isC&&areas.length?`<select style="width:auto;margin-bottom:8px" onchange="UI.f.cArea=this.value;refreshList('customers')"><option value="">All areas</option>${areas.map(a=>`<option ${UI.f.cArea===a?'selected':''}>${esc(a)}</option>`).join('')}</select>`:''}</div>
+ ${chips(pg,kind+'due',[['all','All'],['due','Baaki hai'],['overdue','Overdue']],UI.f[kind+'due']||'all')}
+ <div class="card list" id="list">${partyListHtml(kind)}</div>`}
+V.customers=()=>partyPage('c');V.suppliers=()=>partyPage('s');
+A.exportParties=d=>{const rows=[['Name','Phone','Area','Address','Balance']];allDues(d.k).forEach(x=>rows.push([x.p.name,x.p.phone||'',x.p.area||'',x.p.address||'',x.c.balance]));downloadFile((d.k==='c'?'customers':'suppliers')+'.csv',toCSV(rows),'text/csv')};
+A.addParty=d=>partyForm(d.k,null,()=>render());
+
+function partyForm(kind,id,cb){
+ const isC=kind==='c',col=isC?'customers':'suppliers',c=id?get(col,id):{};
+ const areas=uniq(all('customers').map(x=>x.area).filter(Boolean));
+ const m=formModal((id?'Edit ':'New ')+(isC?'customer':'supplier'),`<div class="fg">${fld(isC?'Shop / customer name *':'Supplier name *','name',c.name,'text','','w')}${fld('Contact person','contact',c.contact)}${fld('Phone','phone',c.phone,'tel')}
+  ${isC?fld('Area / zone','area',c.area,'text','list="dl-areas"')+`<datalist id="dl-areas">${areas.map(a=>`<option value="${esc(a)}">`).join('')}</datalist>`:''}${S().gst?fld('GSTIN','gstin',c.gstin):''}
+  ${fld('Address','address',c.address,'text','','w')}
+  ${isC?fld('Credit limit (₹, 0 = no limit)','creditLimit',c.creditLimit,'number')+fld('Credit days','creditDays',c.creditDays??S().defaultCreditDays,'number'):''}
+  ${fld(isC?'Opening balance (purani baaki, ₹)':'Opening balance (humein dena hai, ₹)','opening',c.opening,'number')}
+  ${isC?`<div class="w" style="margin-bottom:9px"><button class="btn sm" data-act="getLoc">📍 Save current location</button> <span id="locTxt" class="mut">${c.lat?'Location saved ✓':''}</span></div>`:''}
+  ${fld('Notes','notes',c.notes,'text','','w')}</div>`,async(v,m)=>{
+  if(!v.name.trim()){toast('Naam zaroori hai');return false}
+  const dup=all(col).find(x=>x.id!==id&&x.name.trim().toLowerCase()===v.name.trim().toLowerCase()&&(x.area||'')===(v.area||''));
+  if(dup&&!(await askConfirm('Isi naam ka party pehle se hai. Phir bhi add karein?')))return false;
+  const rec=Object.assign({},c,{name:v.name.trim(),contact:v.contact,phone:v.phone,area:(v.area||'').trim(),gstin:v.gstin||'',address:v.address,creditLimit:N(v.creditLimit),creditDays:N(v.creditDays),opening:N(v.opening),notes:v.notes});
+  if(m.dataset.lat){rec.lat=+m.dataset.lat;rec.lng=+m.dataset.lng}
+  if(id)rec.id=id;put(col,rec);toast('Saved ✓');cb&&cb(rec)},{left:id?`<button class="btn d" data-act="delParty" data-k="${kind}" data-id="${id}">Delete</button>`:''});
+ if(c.lat){m.dataset.lat=c.lat;m.dataset.lng=c.lng}return m}
+A.getLoc=(d,t)=>{const m=t.closest('.mb');if(!navigator.geolocation){toast('Location support nahi hai');return}
+ toast('Location le raha hu…');navigator.geolocation.getCurrentPosition(p=>{m.dataset.lat=p.coords.latitude;m.dataset.lng=p.coords.longitude;$('#locTxt',m).textContent='Location saved ✓'},()=>toast('Location permission nahi mili'),{enableHighAccuracy:true,timeout:15000})};
+A.delParty=async(d,t)=>{const kind=d.k,used=(kind==='c'?all('sales').concat(all('orders')):all('purchases')).some(x=>x.partyId===d.id)||all('payments').some(p=>p.partyId===d.id)||all('returns').some(r=>r.partyId===d.id);
+ if(used){toast('Is party ke transactions hain — delete nahi ho sakta');return}
+ if(await askConfirm('Delete this party?','Delete')){del(kind==='c'?'customers':'suppliers',d.id);closeModal(t.closest('.mb'));go(kind==='c'?'customers':'suppliers');render()}};
+
+/* ---------------- party detail ---------------- */
+V.party=(kind,id)=>{
+ const isC=kind==='c',p=get(isC?'customers':'suppliers',id);if(!p)return empty('Party not found');
+ const c=partyCalc(kind,id),tab=UI.f.ptab||'dues',lim=N(p.creditLimit),over=lim>0&&c.balance>lim;
+ const docs=(isC?activeSales():activePurch()).filter(d=>d.partyId===id);
+ const last=docs.length?docs.map(d=>d.date).sort().pop():'';
+ let body='';
+ if(tab==='dues'){const rows=[];if(c.openDue>0)rows.push(['Opening balance','','','',num(c.openDue),'']);if(c.extra>0)rows.push(['Adjustment','','','',num(c.extra),'']);
+  c.open.forEach(r=>rows.push([`<a data-act="docView" data-k="${isC?'sale':'purchase'}" data-id="${r.doc.id}" href="javascript:void 0">${esc(r.doc.no)}</a>`,fdate(r.doc.date),r.age+'d'+(r.overdue>0?` <span class="neg">(+${r.overdue})</span>`:''),num(r.total),`<b>${num(r.due)}</b>`,'']));
+  body=`<div class="card">${table([{h:'Invoice'},{h:'Date'},{h:'Age'},{h:'Total',n:1},{h:'Due',n:1}],rows,['Total due','','','',num(c.due)])}${c.advance>0?`<p class="pos" style="margin:8px 0 0">Advance / on-account: ${inr(c.advance)}</p>`:''}</div>`}
+ else if(tab==='ledger'){const e=ledgerEntries(kind,id);
+  body=`<div class="card">${table([{h:'Date'},{h:'Particulars'},{h:isC?'Debit':'Credit',n:1},{h:isC?'Credit':'Debit',n:1},{h:'Balance',n:1}],e.map(x=>[fdate(x.date),esc(x.desc),x.inc?num(x.inc):'',x.dec?num(x.dec):'',num(x.bal)]),['','Closing balance','','',num(c.balance)])}</div>`}
+ else{body=`<div class="card list">${[...docs].sort(byDate).reverse().map(d=>`<div class="it" data-act="docView" data-k="${isC?'sale':'purchase'}" data-id="${d.id}"><div class="m"><b>${esc(d.no)}</b><small>${fdate(d.date)} · ${d.items.length} items</small></div><div class="r"><b>${inr(d.total)}</b></div></div>`).join('')||empty('No invoices')}</div>`}
+ return`<div class="pgh"><a class="btn sm" href="#/${isC?'customers':'suppliers'}">← Back</a><h1>${esc(p.name)}</h1><button class="btn sm" data-act="editParty" data-k="${kind}" data-id="${id}">✎ Edit</button></div>
+ <div class="card"><div class="row"><div class="sp mut">${esc([p.contact,p.area,p.address].filter(Boolean).join(' · '))}</div>
+  ${p.phone?`<a class="btn sm" href="tel:${esc(p.phone)}">📞 Call</a><a class="btn sm" target="_blank" href="${waLink(p.phone,'')}">💬 WhatsApp</a>`:''}${p.lat?`<a class="btn sm" target="_blank" href="https://www.google.com/maps?q=${p.lat},${p.lng}">📍 Map</a>`:''}</div></div>
+ <div class="grid"><div class="tile gold"><small>${isC?'Balance to receive':'Balance to pay'}</small><b class="${c.balance>0?'neg':'pos'}">${inr(c.balance)}</b></div>
+  ${isC?`<div class="tile"><small>Credit limit</small><b class="${over?'neg':''}">${lim?inr(lim):'—'}</b>${lim?`<div class="hbar" style="margin-top:5px"><i style="width:${Math.min(100,c.balance/lim*100)}%;${over?'background:var(--bad)':''}"></i></div>`:''}</div>`:`<div class="tile"><small>Total purchases</small><b>${inr(sum(docs,d=>d.total))}</b></div>`}
+  <div class="tile"><small>${isC?'Overdue amount':'Bills'}</small><b class="${c.overdueAmt>0?'neg':''}">${isC?inr(c.overdueAmt):docs.length}</b></div><div class="tile"><small>Last ${isC?'invoice':'bill'}</small><b>${last?fdate(last):'—'}</b></div></div>
+ <div class="row" style="margin:10px 0">${isC?`<button class="btn p" data-act="partyDoc" data-k="order" data-id="${id}">📝 Order</button><button class="btn g" data-act="partyDoc" data-k="sale" data-id="${id}">🧾 Invoice</button><button class="btn" data-act="partyPay" data-t="in" data-id="${id}">💰 Receive</button>`:
+  `<button class="btn p" data-act="partyDoc" data-k="purchase" data-id="${id}">🚚 New Bill</button><button class="btn g" data-act="partyPay" data-t="out" data-id="${id}">💸 Pay</button>`}
+  <button class="btn" data-act="partyDoc" data-k="${isC?'sret':'pret'}" data-id="${id}">↩️ Return</button><button class="btn" data-act="statement" data-k="${kind}" data-id="${id}">📄 Statement PDF</button></div>
+ <div class="grid" style="margin-bottom:10px"><div class="tile"><small>0–15 days</small><b>${inr(c.ag.b0)}</b></div><div class="tile"><small>16–30 days</small><b>${inr(c.ag.b1)}</b></div><div class="tile"><small>31–60 days</small><b>${inr(c.ag.b2)}</b></div><div class="tile"><small>60+ days / opening</small><b class="${c.ag.b3>0?'neg':''}">${inr(c.ag.b3)}</b></div></div>
+ ${chips('party','ptab',[['dues','Invoice-wise dues'],['ledger','Ledger'],['docs',isC?'Invoices':'Bills']],tab)}${body}`};
+A.editParty=d=>partyForm(d.k,d.id,()=>render());
+A.partyDoc=d=>{const kind=d.k;openDoc(kind,{partyId:d.id})};
+A.partyPay=d=>openPayment({type:d.t,partyId:d.id});
+A.statement=d=>{const kind=d.k,isC=kind==='c',p=get(isC?'customers':'suppliers',d.id),c=partyCalc(kind,d.id),e=ledgerEntries(kind,d.id);
+ const res=tablePdf({title:'STATEMENT',sub:[p.name,'As on '+fdate(today())],name:'Statement-'+p.name.replace(/\W+/g,'_')+'.pdf',
+  cols:[{h:'Date',w:12},{h:'Particulars',w:44},{h:isC?'Debit':'Credit',w:14,a:'r'},{h:isC?'Credit':'Debit',w:14,a:'r'},{h:'Balance',w:16,a:'r'}],
+  rows:e.map(x=>[fdate(x.date),x.desc,x.inc?num(x.inc):'',x.dec?num(x.dec):'',num(x.bal)]),foot:['','Closing balance ('+(isC?'to receive':'to pay')+')','','',num(c.balance)]});
+ sharePdf(res,'Statement of account — '+S().bizName)};
+
+/* ---------------- products & stock ---------------- */
+LISTS.products=()=>{const q=(UI.q.products||'').toLowerCase(),f=UI.f.pstock||'all',adm=isAdmin(),sc=stockCalc();
+ const rows=all('products').filter(p=>!q||(p.name+' '+(p.brand||'')).toLowerCase().includes(q)).filter(p=>{const s=sc.qty[p.id]||0;return f==='all'||(f==='low'&&N(p.minStock)>0&&s<=N(p.minStock))||(f==='out'&&s<=0)}).sort((a,b)=>a.name.localeCompare(b.name));
+ return rows.map(p=>{const s=sc.qty[p.id]||0,low=N(p.minStock)>0&&s<=N(p.minStock);
+  return`<div class="it" data-act="${adm?'editProduct':'noop'}" data-id="${p.id}"><div class="m"><b>${esc(p.name)}</b><small>${esc(p.brand||'')} · MRP ${inr(p.mrp)} · Sale ${inr(p.salePrice)}${adm?' · Cost '+inr(s>0?sc.value[p.id]/s:p.cost):''}</small></div>
+  <div class="r"><b class="${s<=0?'neg':low?'warn':''}">${num(s)} ${esc(p.unit||'pcs')}</b>${adm?`<br><small class="mut">${inr(sc.value[p.id])}</small>`:''}</div></div>`}).join('')||empty('Koi product nahi — "+ Add product" dabao')};
+V.products=()=>{const sc=stockCalc();
+ return pgh('Products & Stock',`${isAdmin()?`<button class="btn p" data-act="addProduct">+ Add product</button><button class="btn" data-act="stockAdjust">± Adjust stock</button>`:''}`)+
+ (isAdmin()?`<div class="grid g2" style="margin-bottom:10px"><div class="tile"><small>Stock value (FIFO cost)</small><b>${inr(sum(Object.values(sc.value)))}</b></div><div class="tile"><small>At sale price</small><b>${inr(sum(all('products'),p=>(sc.qty[p.id]||0)*N(p.salePrice)))}</b></div></div>`:'')+
+ searchBox('products','Search product / brand')+chips('products','pstock',[['all','All'],['low','Low stock'],['out','Out of stock']],UI.f.pstock||'all')+`<div class="card list" id="list">${LISTS.products()}</div>`};
+A.noop=()=>{};A.addProduct=()=>productForm(null);A.editProduct=d=>productForm(d.id);
+function productForm(id){const p=id?get('products',id):{unit:'pcs',gst:12},brands=uniq(['Zeezap','Concord','Baby Hub'].concat(all('products').map(x=>x.brand).filter(Boolean)));
+ formModal(id?'Edit product':'New product',`<div class="fg">${fld('Product name *','name',p.name,'text','','w')}${fld('Brand','brand',p.brand,'text','list="dl-br"')}<datalist id="dl-br">${brands.map(b=>`<option>${esc(b)}</option>`).join('')}</datalist>${fld('Unit (pcs / pack / case)','unit',p.unit||'pcs')}${fld('HSN/SAC (bill par)','hsn',p.hsn)}
+  ${fld('MRP ₹','mrp',p.mrp,'number')}${fld('Sale price ₹ (your wholesale rate)','salePrice',p.salePrice,'number')}${fld('Purchase cost ₹ (default)','cost',p.cost,'number')}${S().gst?fld('GST %','gst',p.gst,'number'):''}${fld('Low-stock alert (min qty)','minStock',p.minStock,'number')}
+  ${id?'':fld('Opening stock qty','openQty',p.openQty,'number')+fld('Opening stock cost ₹/unit','openCost',p.openCost,'number')}</div>`,(v)=>{
+  if(!v.name.trim()){toast('Naam zaroori hai');return false}
+  const rec=Object.assign({},p,{name:v.name.trim(),brand:v.brand,unit:v.unit||'pcs',hsn:(v.hsn||'').trim(),mrp:N(v.mrp),salePrice:N(v.salePrice),cost:N(v.cost),gst:S().gst?N(v.gst):N(p.gst),minStock:N(v.minStock)});
+  if(!id){rec.openQty=N(v.openQty);rec.openCost=N(v.openCost)||N(v.cost)}else rec.id=id;put('products',rec);toast('Saved ✓');render()},
+  {left:id?`<button class="btn d" data-act="delProduct" data-id="${id}">Delete</button>`:''})}
+A.delProduct=async(d,t)=>{const used=activeSales().concat(activePurch(),all('orders')).some(x=>x.items.some(l=>l.pid===d.id));
+ if(used){toast('Is product ka transaction hua hai — delete nahi ho sakta');return}
+ if(await askConfirm('Delete product?','Delete')){del('products',d.id);closeModal(t.closest('.mb'));render()}};
+A.stockAdjust=()=>{const ps=all('products').sort((a,b)=>a.name.localeCompare(b.name));
+ formModal('Stock adjust (damage / count correction)',`<div class="fg">${sel('Product','pid',[['','— select —']].concat(ps.map(p=>[p.id,p.name+' (stock '+num(stockQty(p.id))+')'])),'','','w')}${fld('Date','date',today(),'date')}
+  ${fld('Qty (+ add / − reduce)','qty','','number')}${fld('Reason','reason','Damaged / count correction','text','','w')}</div>`,v=>{
+  if(!v.pid||!N(v.qty)){toast('Product aur qty daalo');return false}
+  put('adjustments',{date:v.date,pid:v.pid,qty:N(v.qty),reason:v.reason,by:me.id});toast('Stock adjusted ✓');render()})};
+/* ================= views B: document form, orders, sales, purchases, payments, returns, expenses ================= */
+const KINDS={
+ sale:{title:'Sales Invoice',col:'sales',pc:'c',price:'salePrice',pre:()=>S().prefix+'-'},
+ order:{title:'Order',col:'orders',pc:'c',price:'salePrice',pre:()=>'ORD-'},
+ purchase:{title:'Purchase Bill',col:'purchases',pc:'s',price:'cost',pre:()=>'PUR-'},
+ sret:{title:'Sales Return',col:'returns',pc:'c',price:'salePrice',pre:()=>'SR-'},
+ pret:{title:'Purchase Return',col:'returns',pc:'s',price:'cost',pre:()=>'PR-'}};
+const MODES=['Cash','UPI','Bank transfer','Cheque'];
+
+function openDoc(kind,opts={}){
+ const K=KINDS[kind],gstOn=S().gst,isRet=kind==='sret'||kind==='pret';
+ if(!all('products').length){toast('Pehle products add karo (Products & Stock)');return}
+ const ex=opts.id?get(K.col,opts.id):null,from=opts.fromOrder||null;
+ const st={items:[],partyId:opts.partyId||'',refId:ex?ex.refId||'':'',orderId:from?from.id:null};
+ if(ex){st.items=ex.items.map(l=>({...l}));st.partyId=ex.partyId}else if(from){st.items=from.items.map(l=>({...l}));st.partyId=from.partyId}else st.items=[{pid:'',qty:'',rate:'',disc:0,gst:0}];
+ const prods=all('products').sort((a,b)=>a.name.localeCompare(b.name)),showStock=kind==='sale'||kind==='order'||kind==='pret';
+ const party=st.partyId?get(K.pc==='c'?'customers':'suppliers',st.partyId):null;
+ const rowsHtml=()=>st.items.map((l,i)=>{const c=lineCalc(l,gstOn);
+  return`<div class="itm" data-i="${i}"><div class="l1"><select data-f="pid"><option value="">— item chuno —</option>${prods.map(p=>`<option value="${p.id}" ${p.id===l.pid?'selected':''}>${esc(p.name)}${showStock?' · stock '+num(stockQty(p.id)):''}</option>`).join('')}</select><button class="btn sm d" data-act="docDel" data-i="${i}">✕</button></div>
+  <div class="l2" style="${gstOn?'grid-template-columns:repeat(5,1fr)':''}"><label>Qty<input data-f="qty" type="number" inputmode="decimal" step="any" value="${l.qty??''}"></label><label>Rate<input data-f="rate" type="number" inputmode="decimal" step="any" value="${l.rate??''}"></label><label>Disc %<input data-f="disc" type="number" inputmode="decimal" step="any" value="${l.disc||''}"></label>${gstOn?`<label>GST %<input data-f="gst" type="number" inputmode="decimal" step="any" value="${l.gst||''}"></label>`:''}<label>Amount<input data-f="amt" readonly value="${num(c.net)}"></label></div></div>`}).join('');
+ const refOpts=()=>{const docs=(K.pc==='c'?activeSales():activePurch()).filter(d=>d.partyId===st.partyId).sort(byDate).reverse();
+  return`<option value="">— koi invoice nahi / manual —</option>`+docs.map(d=>`<option value="${d.id}" ${d.id===st.refId?'selected':''}>${esc(d.no)} · ${fdate(d.date)} · ${inr(d.total)}</option>`).join('')};
+ const payBlock=(kind==='sale'||kind==='purchase')&&!ex?`<div class="fg">${fld(kind==='sale'?'Payment abhi mila (₹)':'Supplier ko abhi diya (₹)','payNow','','number')}${sel('Mode','payMode',MODES,'Cash')}</div>`:
+  isRet?`<div class="fg">${sel('Settlement','settle',[['credit','Balance me adjust (credit note)'],['refund',kind==='sret'?'Customer ko paisa wapas diya':'Supplier se paisa wapas mila']],'credit')}${sel('Refund mode','payMode',MODES,'Cash')}</div>`:'';
+ const body=`<div class="fg"><label class="f w">${K.pc==='c'?'Customer':'Supplier'} *<div class="row" style="flex-wrap:nowrap"><input name="party" list="dl-party" value="${esc(party?partyLabel(party):'')}" placeholder="Name type karo / list se chuno" autocomplete="off"><button class="btn sm" data-act="docNewParty" type="button">+ New</button></div></label>${partyList(K.pc)}
+  ${fld('Date','date',ex?ex.date:today(),'date')}${kind==='purchase'?fld('Supplier bill no.','billNo',ex?ex.billNo:''):isRet?`<label class="f">Against ${K.pc==='c'?'invoice':'bill'} (optional)<select name="ref" id="refSel">${refOpts()}</select></label>`:'<div></div>'}</div>
+  <div id="cwarn"></div><div id="items">${rowsHtml()}</div><button class="btn sm" data-act="docAdd" type="button">+ Item jodo</button>
+  <div class="fg" style="margin-top:10px">${isRet?fld('Reason','reason',ex?ex.reason:'','text','','w'):fld('Extra discount (flat ₹)','flat',ex?ex.flat||'':'','number')+fld('Notes','notes',ex?ex.notes:'')}</div>${payBlock}<div class="tot" id="tot"></div>`;
+ const m=formModal((ex?'Edit ':'New ')+K.title,body,async(v,m)=>{
+  const pr=resolveParty(K.pc,v.party);if(!pr){toast('List se party chuno (ya + New se banao)');return false}
+  const items=st.items.filter(l=>l.pid&&N(l.qty)>0).map(l=>({pid:l.pid,name:pname(l.pid),qty:N(l.qty),rate:N(l.rate),disc:N(l.disc),gst:gstOn?N(l.gst):0}));
+  if(!items.length){toast('Kam se kam ek item aur qty daalo');return false}
+  if(!v.date){toast('Date daalo');return false}
+  const calc=docCalc(items,isRet?0:N(v.flat),gstOn);
+  if(isRet){
+   const rec={no:nextNo('returns',K.pre()),date:v.date,type:kind==='sret'?'sale':'purchase',partyId:pr.id,refId:v.ref||'',items,net:calc.net,tax:calc.tax,total:calc.total,reason:v.reason,by:me.id};
+   put('returns',rec);
+   if(v.settle==='refund')put('payments',{date:v.date,type:kind==='sret'?'out':'in',partyType:K.pc,partyId:pr.id,amount:rec.total,mode:v.payMode,ref:'Refund '+rec.no,retId:rec.id,alloc:[],by:me.id});
+   toast('Return saved ✓');render();return}
+  const base=ex?Object.assign({},ex):{status:kind==='order'?'pending':'active',by:me.id,no:nextNo(K.col,K.pre())};
+  const rec=Object.assign(base,{date:v.date,partyId:pr.id,items,notes:v.notes||'',billNo:v.billNo||'',...calc});
+  if(st.orderId)rec.orderId=st.orderId;put(K.col,rec);
+  const payNow=N(v.payNow);
+  if(!ex&&payNow>0)put('payments',{date:v.date,type:kind==='sale'?'in':'out',partyType:K.pc,partyId:pr.id,amount:payNow,mode:v.payMode,alloc:[{id:rec.id,amt:Math.min(payNow,rec.total)}],docId:rec.id,by:me.id});
+  if(kind==='purchase')items.forEach(l=>{const p=get('products',l.pid);if(p&&N(l.rate)>0&&N(p.cost)!==N(l.rate))put('products',Object.assign({},p,{cost:N(l.rate)}))});
+  if(from){const o=get('orders',from.id);if(o)put('orders',Object.assign({},o,{status:'delivered',invoiceId:rec.id,deliveredOn:v.date}))}
+  toast(K.title+' saved ✓');render();
+  if(kind==='sale')docView('sale',rec.id);
+ },{wide:true,label:ex?'Update':'Save'});
+ const refresh=()=>{
+  const v=fv(m),flat=isRet?0:N(v.flat),calc=docCalc(st.items.filter(l=>l.pid&&N(l.qty)>0),flat,gstOn);
+  $$('.itm',m).forEach((row,i)=>{const a=row.querySelector('[data-f=amt]');if(a)a.value=num(lineCalc(st.items[i],gstOn).net)});
+  const payNow=N(v.payNow);
+  $('#tot',m).innerHTML=`<div><span>Subtotal</span><span>${inr(calc.net)}</span></div>${gstOn?`<div><span>GST</span><span>${inr(calc.tax)}</span></div>`:''}${flat?`<div><span>Discount</span><span>-${inr(flat)}</span></div>`:''}${calc.round?`<div><span>Round off</span><span>${calc.round}</span></div>`:''}<div class="g"><span>Total</span><span>${inr(calc.total)}</span></div>${payNow>0?`<div class="mut"><span>Baaki rahega</span><span>${inr(Math.max(0,calc.total-payNow))}</span></div>`:''}`;
+  let w='';const pr=resolveParty(K.pc,v.party);
+  if(pr&&(kind==='sale'||kind==='order')){const c=partyCalc('c',pr.id),after=c.balance+calc.total-(kind==='sale'?payNow:0),lim=N(pr.creditLimit);
+   w+=`<div class="mut" style="font-size:13px;margin:6px 0">Is customer ki pichli baaki: <b class="${c.balance>0?'neg':''}">${inr(c.balance)}</b>${c.overdueAmt>0?` · overdue ${inr(c.overdueAmt)}`:''}</div>`;
+   if(lim>0&&after>lim)w+=`<div class="warnbox">⚠️ Credit limit ${inr(lim)} paar ho jayegi — baaki ${inr(c.balance)} + ye ${inr(calc.total)} = ${inr(after)}</div>`}
+  if(showStock){const need={};st.items.forEach(l=>{if(l.pid&&N(l.qty)>0)need[l.pid]=(need[l.pid]||0)+N(l.qty)});
+   Object.entries(need).forEach(([pid,q])=>{const back=ex&&ex.items?sum(ex.items.filter(l=>l.pid===pid),l=>l.qty):0,avail=stockQty(pid)+(kind==='sale'?back:0);if(showStock&&q>avail)w+=`<div class="warnbox">📦 ${esc(pname(pid))}: stock ${num(avail)} hai, aap ${num(q)} de rahe ho</div>`})}
+  $('#cwarn',m).innerHTML=w};
+ m.addEventListener('input',e=>{const t=e.target,row=t.closest('.itm');
+  if(row&&t.dataset.f&&t.dataset.f!=='pid'&&t.dataset.f!=='amt'){st.items[+row.dataset.i][t.dataset.f]=t.value;refresh()}
+  else if(['flat','payNow'].includes(t.name))refresh()});
+ m.addEventListener('change',e=>{const t=e.target;
+  if(t.dataset.f==='pid'){const i=+t.closest('.itm').dataset.i,l=st.items[i],p=get('products',t.value);l.pid=t.value;
+   if(p){l.name=p.name;const lr=K.pc==='c'&&!isRet?lastRate(st.partyId,p.id):null;l.rate=lr!==null?lr:N(p[K.price]);l.gst=N(p.gst);if(!N(l.qty))l.qty=1}
+   $('#items',m).innerHTML=rowsHtml();refresh()}
+  else if(t.name==='party'){const pr=resolveParty(K.pc,t.value);st.partyId=pr?pr.id:'';if(isRet){st.refId='';$('#refSel',m).innerHTML=refOpts()}refresh()}
+  else if(t.id==='refSel'){st.refId=t.value;const d=(K.pc==='c'?get('sales',t.value):get('purchases',t.value));if(d){st.items=d.items.map(l=>({...l}));$('#items',m).innerHTML=rowsHtml()}refresh()}
+  else if(t.name==='date'||t.name==='payMode'||t.name==='settle')refresh()});
+ m._st=st;m._rows=()=>{$('#items',m).innerHTML=rowsHtml();refresh()};m._pick=(label)=>{m.querySelector('[name=party]').value=label;st.partyId=(resolveParty(K.pc,label)||{}).id||'';refresh()};
+ m._K=K;refresh();return m}
+A.docAdd=(d,t)=>{const m=t.closest('.mb');m._st.items.push({pid:'',qty:'',rate:'',disc:0,gst:0});m._rows()};
+A.docDel=(d,t)=>{const m=t.closest('.mb');m._st.items.splice(+d.i,1);if(!m._st.items.length)m._st.items.push({pid:'',qty:'',rate:'',disc:0,gst:0});m._rows()};
+A.docNewParty=(d,t)=>{const m=t.closest('.mb'),kind=m._K.pc;partyForm(kind,null,rec=>{const dl=m.querySelector('#dl-party');dl.insertAdjacentHTML('beforeend',`<option value="${esc(partyLabel(rec))}">`);m._pick(partyLabel(rec))})};
+
+/* ---------------- document view (invoice / bill) ---------------- */
+const docStatus=(d,row)=>d.status==='cancelled'?badge('Cancelled','bad'):row?(row.due<=0.005?badge('Paid','ok'):row.due<d.total-row.ret-0.005?badge('Partly paid','warn'):badge('Unpaid','bad')):'';
+function docView(kind,id){const isS=kind==='sale',d=get(isS?'sales':'purchases',id);if(!d)return;
+ const pc=isS?'c':'s',pr=get(isS?'customers':'suppliers',d.partyId)||{},c=partyCalc(pc,d.partyId),row=c.rows.find(r=>r.doc.id===id),gst=S().gst;
+ const sc=stockCalc(),cogs=sc.saleCogs[id]||0,live=d.status!=='cancelled';
+ const items=table([{h:'Item'},{h:'Qty',n:1},{h:'Rate',n:1},{h:'Disc',n:1},{h:'Amount',n:1}],d.items.map((l,i)=>[esc(l.name||pname(l.pid)),num(l.qty),num(l.rate),N(l.disc)?num(l.disc)+'%':'',num(lineCalc(l,gst).net)]));
+ const adj=row?d.total-row.ret-row.due:0;
+ const foot=live?`<button class="btn" data-act="docPdf" data-k="${kind}" data-id="${id}">📄 PDF</button>${isS&&pr.phone?`<a class="btn" target="_blank" href="${waLink(pr.phone,invoiceText(d,row))}">💬 WhatsApp</a>`:''}
+  ${row&&row.due>0?`<button class="btn g" data-act="docPay" data-k="${kind}" data-id="${id}">${isS?'💰 Receive':'💸 Pay'}</button>`:''}
+  <button class="btn" data-act="docReturn" data-k="${kind}" data-id="${id}">↩️ Return</button>${isAdmin()?`<button class="btn" data-act="docEdit" data-k="${kind}" data-id="${id}">✎ Edit</button><button class="btn d" data-act="docCancel" data-k="${kind}" data-id="${id}">Cancel</button>`:''}`:'';
+ modal(`${esc(d.no)} ${docStatus(d,row)}`,`<div class="row"><b class="sp">${esc(pr.name||'')}</b><span class="mut">${fdate(d.date)}${d.by?' · '+esc(userName(d.by)):''}</span></div>${d.status==='cancelled'?`<div class="warnbox">Cancelled${d.cancelReason?': '+esc(d.cancelReason):''}</div>`:''}<div style="margin:8px 0">${items}</div>
+  <div class="tot"><div><span>Subtotal</span><span>${inr(d.net)}</span></div>${gst&&d.tax?`<div><span>GST</span><span>${inr(d.tax)}</span></div>`:''}${N(d.flat)?`<div><span>Discount</span><span>-${inr(d.flat)}</span></div>`:''}
+  <div class="g"><span>Total</span><span>${inr(d.total)}</span></div>${row&&live?`${row.ret?`<div><span>Returns</span><span>-${inr(row.ret)}</span></div>`:''}<div><span>Paid / adjusted</span><span class="pos">${inr(adj)}</span></div><div><b>Balance due</b><b class="${row.due>0?'neg':'pos'}">${inr(row.due)}</b></div>`:''}</div>
+  ${isS&&isAdmin()&&live?`<div class="mut" style="margin-top:8px;font-size:13px">FIFO cost ${inr(cogs)} · profit <b class="${d.net-d.flat-cogs>=0?'pos':'neg'}">${inr(d.net-d.flat-cogs)}</b></div>`:''}${d.notes?`<p class="mut">Note: ${esc(d.notes)}</p>`:''}`,foot,{wide:true})}
+const invoiceText=(d,row)=>`${S().bizName}\nInvoice ${d.no} dated ${fdate(d.date)}\nAmount: ₹${num(d.total)}${row&&row.due>0?`\nBalance due: ₹${num(row.due)}`:''}${S().upi?`\nPay via UPI: ${S().upi}`:''}\nThank you!`;
+A.docView=d=>docView(d.k,d.id);
+A.docPdf=(d)=>{const doc=get(d.k==='sale'?'sales':'purchases',d.id);if(d.k==='sale')sharePdf(invoicePdf(doc),invoiceText(doc,partyCalc('c',doc.partyId).rows.find(r=>r.doc.id===doc.id)));
+ else{const res=tablePdf({title:'PURCHASE BILL',sub:[doc.no,fdate(doc.date),partyName('s',doc.partyId)],name:doc.no.replace(/\W+/g,'_')+'.pdf',cols:[{h:'Item',w:50},{h:'Qty',w:12,a:'r'},{h:'Rate',w:16,a:'r'},{h:'Amount',w:18,a:'r'}],rows:doc.items.map(l=>[l.name||pname(l.pid),num(l.qty),num(l.rate),num(lineCalc(l,S().gst).net)]),foot:['Total','','',num(doc.total)]});sharePdf(res)}};
+A.docPay=(d,t)=>{const doc=get(d.k==='sale'?'sales':'purchases',d.id);closeModal(t.closest('.mb'));openPayment({type:d.k==='sale'?'in':'out',partyId:doc.partyId,invoiceId:doc.id})};
+A.docReturn=(d,t)=>{const doc=get(d.k==='sale'?'sales':'purchases',d.id);closeModal(t.closest('.mb'));const m=openDoc(d.k==='sale'?'sret':'pret',{partyId:doc.partyId});if(m){m.querySelector('#refSel').value=doc.id;m.querySelector('#refSel').dispatchEvent(new Event('change',{bubbles:true}))}};
+A.docEdit=(d,t)=>{closeModal(t.closest('.mb'));openDoc(d.k,{id:d.id})};
+A.docCancel=async(d,t)=>{const r=await askInput('Cancel '+(d.k==='sale'?'invoice':'bill'),'Reason (optional)');if(r===null)return;
+ const col=d.k==='sale'?'sales':'purchases',doc=get(col,d.id);put(col,Object.assign({},doc,{status:'cancelled',cancelReason:r}));closeModal(t.closest('.mb'));toast('Cancelled');render()};
+
+/* ---------------- orders & delivery ---------------- */
+LISTS.orders=()=>{const q=(UI.q.orders||'').toLowerCase(),f=UI.f.ostat||'pending',area=UI.f.oArea||'';
+ const rows=all('orders').filter(o=>f==='all'||o.status===f).filter(o=>{const c=get('customers',o.partyId)||{};return(!q||(c.name+' '+o.no+' '+(c.area||'')).toLowerCase().includes(q))&&(!area||c.area===area)}).sort(byDate).reverse();
+ return rows.map(o=>{const c=get('customers',o.partyId)||{};return`<div class="it" data-act="orderView" data-id="${o.id}"><div class="m"><b>${esc(c.name||'')}</b><small>${o.no} · ${fdate(o.date)}${c.area?' · '+esc(c.area):''} · ${o.items.length} items</small></div><div class="r"><b>${inr(o.total)}</b><br>${o.status==='pending'?badge('Pending','warn'):o.status==='delivered'?badge('Delivered','ok'):badge('Cancelled','bad')}</div></div>`}).join('')||empty('Koi order nahi')};
+V.orders=()=>{const pend=all('orders').filter(o=>o.status==='pending'),areas=uniq(all('customers').map(c=>c.area).filter(Boolean)).sort();
+ return pgh('Orders & Delivery',`<button class="btn p" data-act="newDoc" data-k="order">+ New order</button><button class="btn" data-act="pickList">📋 Pick list</button>`)+
+ `<div class="grid g2" style="margin-bottom:10px"><div class="tile gold"><small>Pending deliveries</small><b>${pend.length}</b></div><div class="tile"><small>Pending value</small><b>${inr(sum(pend,o=>o.total))}</b></div></div>
+ <div class="row">${searchBox('orders','Customer / order no.').replace('style="margin-bottom:8px"','style="margin-bottom:8px;flex:1"')}${areas.length?`<select style="width:auto;margin-bottom:8px" onchange="UI.f.oArea=this.value;refreshList('orders')"><option value="">All areas</option>${areas.map(a=>`<option ${UI.f.oArea===a?'selected':''}>${esc(a)}</option>`).join('')}</select>`:''}</div>
+ ${chips('orders','ostat',[['pending','Pending'],['delivered','Delivered'],['cancelled','Cancelled'],['all','All']],UI.f.ostat||'pending')}<div class="card list" id="list">${LISTS.orders()}</div>`};
+A.orderView=d=>{const o=get('orders',d.id);if(!o)return;const c=get('customers',o.partyId)||{},sc=stockCalc();
+ const items=table([{h:'Item'},{h:'Qty',n:1},{h:'Rate',n:1},{h:'Stock',n:1},{h:'Amount',n:1}],o.items.map(l=>[esc(l.name||pname(l.pid)),num(l.qty),num(l.rate),`<span class="${(sc.qty[l.pid]||0)<l.qty?'neg':''}">${num(sc.qty[l.pid]||0)}</span>`,num(lineCalc(l,S().gst).net)]));
+ const pend=o.status==='pending';
+ modal(`${esc(o.no)} ${pend?badge('Pending','warn'):o.status==='delivered'?badge('Delivered','ok'):badge('Cancelled','bad')}`,
+  `<div class="row"><b class="sp">${esc(c.name||'')}</b><span class="mut">${fdate(o.date)}</span></div><div class="mut" style="font-size:13px">${esc([c.area,c.address].filter(Boolean).join(' · '))}</div>
+  ${o.status==='cancelled'?`<div class="warnbox">Cancelled: ${esc(o.cancelReason||'—')}</div>`:''}${o.status==='delivered'&&o.invoiceId?`<div class="warnbox" style="background:#e6f6ec;border-color:#b5e2c6;color:#14804a">Delivered ${fdate(o.deliveredOn)} · <a href="javascript:void 0" data-act="docView" data-k="sale" data-id="${o.invoiceId}">invoice dekho</a></div>`:''}
+  <div style="margin:8px 0">${items}</div><div class="tot"><div class="g"><span>Order value</span><span>${inr(o.total)}</span></div></div>${o.notes?`<p class="mut">Note: ${esc(o.notes)}</p>`:''}`,
+  pend?`${c.phone?`<a class="btn" href="tel:${esc(c.phone)}">📞</a>`:''}${c.lat?`<a class="btn" target="_blank" href="https://www.google.com/maps?q=${c.lat},${c.lng}">📍</a>`:''}<button class="btn" data-act="editOrder" data-id="${o.id}">✎ Edit</button><button class="btn d" data-act="cancelOrder" data-id="${o.id}">Cancel</button><button class="btn g" data-act="deliverOrder" data-id="${o.id}">✅ Deliver & Invoice</button>`:'',{wide:true})};
+A.editOrder=(d,t)=>{closeModal(t.closest('.mb'));openDoc('order',{id:d.id})};
+A.deliverOrder=(d,t)=>{const o=get('orders',d.id);closeModal(t.closest('.mb'));openDoc('sale',{fromOrder:o})};
+A.cancelOrder=async(d,t)=>{const r=await askInput('Cancel order','Reason');if(r===null)return;const o=get('orders',d.id);put('orders',Object.assign({},o,{status:'cancelled',cancelReason:r}));closeModal(t.closest('.mb'));toast('Order cancelled');render()};
+A.pickList=()=>{const need={};all('orders').filter(o=>o.status==='pending').forEach(o=>o.items.forEach(l=>need[l.pid]=(need[l.pid]||0)+N(l.qty)));const sc=stockCalc();
+ modal('Pick list — pending orders',table([{h:'Product'},{h:'Needed',n:1},{h:'In stock',n:1},{h:'Short',n:1}],Object.entries(need).map(([pid,q])=>{const s=sc.qty[pid]||0;return[esc(pname(pid)),num(q),num(s),q>s?`<b class="neg">${num(q-s)}</b>`:'—']})))};
+
+/* ---------------- sales & purchases lists ---------------- */
+function docListHtml(kind){const isS=kind==='sale',pg=isS?'sales':'purchases',q=(UI.q[pg]||'').toLowerCase(),r=periodRange(UI.f[pg+'p']||'month'),pc=isS?'c':'s';
+ const docs=all(isS?'sales':'purchases').filter(d=>inR(d.date,r)).filter(d=>{const p=get(isS?'customers':'suppliers',d.partyId)||{};return!q||(d.no+' '+p.name+' '+(d.billNo||'')).toLowerCase().includes(q)}).sort(byDate).reverse();
+ const live=docs.filter(d=>d.status!=='cancelled');
+ const rows=docs.map(d=>{const p=get(isS?'customers':'suppliers',d.partyId)||{},row=partyCalc(pc,d.partyId).rows.find(x=>x.doc.id===d.id);
+  return`<div class="it" data-act="docView" data-k="${kind}" data-id="${d.id}"><div class="m"><b>${esc(p.name||'')}</b><small>${d.no} · ${fdate(d.date)}${d.by?' · '+esc(userName(d.by)):''}</small></div><div class="r"><b>${inr(d.total)}</b><br>${docStatus(d,row)}</div></div>`}).join('')||empty('Koi entry nahi');
+ return`<div class="row mut" style="font-size:13px;margin-bottom:6px"><span>${live.length} ${isS?'invoices':'bills'}</span><span class="sp"></span><b style="color:var(--tx)">Total ${inr(sum(live,d=>d.total))}</b></div>`+rows}
+LISTS.sales=()=>docListHtml('sale');LISTS.purchases=()=>docListHtml('purchase');
+const periodChips=(pg)=>chips(pg,pg+'p',[['today','Today'],['week','Week'],['month','Month'],['lastmonth','Last month'],['fy','FY'],['all','All']],UI.f[pg+'p']||'month');
+V.sales=()=>pgh('Sales Invoices',`<button class="btn g" data-act="newDoc" data-k="sale">+ New invoice</button>`)+searchBox('sales','Invoice no. / customer')+periodChips('sales')+`<div class="card list" id="list">${docListHtml('sale')}</div>`;
+V.purchases=()=>pgh('Purchases',`<button class="btn g" data-act="newDoc" data-k="purchase">+ New bill</button>`)+searchBox('purchases','Bill no. / supplier')+periodChips('purchases')+`<div class="card list" id="list">${docListHtml('purchase')}</div>`;
+
+/* ---------------- payments ---------------- */
+function openPayment(o){
+ const type=o.type,pc=type==='in'?'c':'s',st={partyId:o.partyId||'',invoiceId:o.invoiceId||''};
+ const party=st.partyId?get(pc==='c'?'customers':'suppliers',st.partyId):null;
+ const m=formModal(type==='in'?'Payment received':'Payment to supplier',`<div class="fg"><label class="f w">${pc==='c'?'Customer':'Supplier'} *<input name="party" list="dl-party" value="${esc(party?partyLabel(party):'')}" placeholder="Select / type" autocomplete="off"></label>${partyList(pc)}
+  <div class="w" id="pinfo"></div>${fld('Amount ₹ *','amount','','number','','')}${fld('Date','date',today(),'date')}${sel('Mode','mode',MODES,'Cash')}${fld('Ref / UTR / Cheque no.','ref','')}
+  ${sel('Allocation','allocMode',[['auto','Auto — sabse purani baaki me'],['manual','Invoice chunke']],o.invoiceId?'manual':'auto','','w')}<div class="w" id="allocBox"></div>${fld('Notes','notes','','text','','w')}</div>`,
+  (v)=>{const pr=resolveParty(pc,v.party);if(!pr){toast('List se party chuno');return false}const amount=N(v.amount);if(amount<=0){toast('Amount daalo');return false}
+   const alloc=[];if(v.allocMode==='manual')$$('[data-alloc]',m).forEach(i=>{const a=N(i.value);if(a>0)alloc.push({id:i.dataset.alloc,amt:a})});
+   if(r2(sum(alloc,a=>a.amt))>r2(amount)){toast('Allocation amount se zyada hai');return false}
+   put('payments',{date:v.date,type,partyType:pc,partyId:pr.id,amount,mode:v.mode,ref:v.ref,notes:v.notes,alloc,by:me.id});toast('Payment saved ✓');render()},{label:'Save payment'});
+ const info=()=>{const pr=resolveParty(pc,m.querySelector('[name=party]').value);st.partyId=pr?pr.id:'';
+  if(!pr){$('#pinfo',m).innerHTML='';$('#allocBox',m).innerHTML='';return}
+  const c=partyCalc(pc,pr.id);$('#pinfo',m).innerHTML=`<div class="warnbox" style="background:#eef3ff;border-color:#cfdcff;color:var(--navy)">Current balance: <b>${inr(c.balance)}</b>${c.advance?` (advance ${inr(c.advance)})`:''}</div>`;
+  if(m.querySelector('[name=allocMode]').value==='manual'){
+   $('#allocBox',m).innerHTML=(c.open.length?c.open.map(r=>`<div class="row" style="margin-bottom:6px"><span class="sp" style="font-size:13px">${esc(r.doc.no)} · ${fdate(r.doc.date)} <span class="mut">(due ${num(r.due)})</span></span><input data-alloc="${r.doc.id}" type="number" inputmode="decimal" step="any" style="width:110px" value="${st.invoiceId===r.doc.id?r.due:''}"></div>`).join('')+`<button class="btn sm" type="button" data-act="fillAlloc">Amount se purane pehle bharo</button>`:'<span class="mut">Koi open invoice nahi</span>')
+   if(st.invoiceId&&!m.querySelector('[name=amount]').value){const r=c.open.find(x=>x.doc.id===st.invoiceId);if(r)m.querySelector('[name=amount]').value=r.due}}
+  else $('#allocBox',m).innerHTML=''};
+ m.addEventListener('change',e=>{if(e.target.name==='party'||e.target.name==='allocMode')info()});info();return m}
+A.fillAlloc=(d,t)=>{const m=t.closest('.mb');let amt=N(m.querySelector('[name=amount]').value);$$('[data-alloc]',m).forEach(i=>{const due=N(i.closest('.row').querySelector('.mut').textContent.replace(/[^\d.]/g,''));const a=Math.min(amt,due);i.value=a>0?a:'';amt-=a})};
+LISTS.payments=()=>{const r=periodRange(UI.f.paymentsp||'month'),dir=UI.f.pdir||'all',adm=isAdmin();
+ const rows=all('payments').filter(p=>inR(p.date,r)&&(dir==='all'||(dir==='in'&&p.type==='in')||(dir==='out'&&p.type==='out'))&&(adm||p.type==='in')).sort(byDate).reverse();
+ const tin=sum(rows.filter(p=>p.type==='in'),p=>p.amount),tout=sum(rows.filter(p=>p.type==='out'),p=>p.amount);
+ return`<div class="row" style="font-size:13px;margin-bottom:6px"><span class="pos">In ${inr(tin)}</span>${adm?`<span class="neg">Out ${inr(tout)}</span>`:''}</div>`+(rows.map(p=>`<div class="it"><div class="m"><b>${esc(partyName(p.partyType,p.partyId))}</b><small>${fdate(p.date)} · ${esc(p.mode)}${p.ref?' · '+esc(p.ref):''}${p.by?' · '+esc(userName(p.by)):''}</small></div><div class="r"><b class="${p.type==='in'?'pos':'neg'}">${p.type==='in'?'+':'−'}${inr(p.amount)}</b>${adm?`<br><a class="mut" style="font-size:12px" href="javascript:void 0" data-act="delPay" data-id="${p.id}">delete</a>`:''}</div></div>`).join('')||empty('Koi payment nahi'))};
+V.payments=()=>pgh('Payments',`<button class="btn p" data-act="newPay" data-t="in">+ Received</button>${isAdmin()?`<button class="btn" data-act="newPay" data-t="out">+ Paid to supplier</button>`:''}`)+
+ periodChips('payments')+(isAdmin()?chips('payments','pdir',[['all','All'],['in','Received'],['out','Paid']],UI.f.pdir||'all'):'')+`<div class="card list" id="list">${LISTS.payments()}</div>`;
+A.delPay=async(d)=>{if(await askConfirm('Ye payment delete karein?','Delete')){del('payments',d.id);toast('Deleted');render()}};
+
+/* ---------------- returns ---------------- */
+LISTS.returns=()=>{const f=UI.f.rtype||'all',rows=all('returns').filter(r=>f==='all'||r.type===f).filter(r=>isAdmin()||r.type==='sale').sort(byDate).reverse();
+ return rows.map(r=>`<div class="it" data-act="retView" data-id="${r.id}"><div class="m"><b>${esc(partyName(r.type==='sale'?'c':'s',r.partyId))}</b><small>${r.no} · ${fdate(r.date)} · ${r.type==='sale'?'Sales':'Purchase'} return</small></div><div class="r"><b>${inr(r.total)}</b></div></div>`).join('')||empty('Koi return nahi')};
+V.returns=()=>pgh('Returns',`<button class="btn p" data-act="newDoc" data-k="sret">+ Sales return</button>${isAdmin()?`<button class="btn" data-act="newDoc" data-k="pret">+ Purchase return</button>`:''}`)+
+ (isAdmin()?chips('returns','rtype',[['all','All'],['sale','Sales returns'],['purchase','Purchase returns']],UI.f.rtype||'all'):'')+`<div class="card list" id="list">${LISTS.returns()}</div>`;
+A.retView=d=>{const r=get('returns',d.id);if(!r)return;const pc=r.type==='sale'?'c':'s';
+ modal('Return '+esc(r.no),`<div class="row"><b class="sp">${esc(partyName(pc,r.partyId))}</b><span class="mut">${fdate(r.date)}</span></div>${r.refId?`<p class="mut" style="margin:4px 0">Against: ${esc((get(r.type==='sale'?'sales':'purchases',r.refId)||{}).no||'')}</p>`:''}
+  <div style="margin:8px 0">${table([{h:'Item'},{h:'Qty',n:1},{h:'Rate',n:1},{h:'Amount',n:1}],r.items.map(l=>[esc(l.name||pname(l.pid)),num(l.qty),num(l.rate),num(lineCalc(l,S().gst).net)]))}</div>
+  <div class="tot"><div class="g"><span>Return value</span><span>${inr(r.total)}</span></div></div>${r.reason?`<p class="mut">Reason: ${esc(r.reason)}</p>`:''}`,isAdmin()?`<button class="btn d" data-act="delReturn" data-id="${r.id}">Delete return</button>`:'')};
+A.delReturn=async(d,t)=>{if(await askConfirm('Return delete karein? Stock aur balance wapas pehle jaisa ho jayega.','Delete')){all('payments').filter(p=>p.retId===d.id).forEach(p=>del('payments',p.id));del('returns',d.id);closeModal(t.closest('.mb'));render()}};
+
+/* ---------------- expenses ---------------- */
+const EXP_CATS=['Transport / Delivery','Fuel','Packing','Salary / Commission','Rent','Marketing / Samples','Phone / Internet','Office / Misc','Bank / Other charges'];
+const payerName=p=>p==='A'?S().partnerA:p==='B'?S().partnerB:'Business';
+LISTS.expenses=()=>{const r=periodRange(UI.f.expensesp||'month'),rows=all('expenses').filter(e=>inR(e.date,r)).sort(byDate).reverse();
+ return`<div class="row" style="font-size:13px;margin-bottom:6px"><b class="sp">Total ${inr(sum(rows,e=>e.amount))}</b></div>`+(rows.map(e=>`<div class="it" data-act="editExpense" data-id="${e.id}"><div class="m"><b>${esc(e.category)}</b><small>${fdate(e.date)} · ${esc(e.mode||'Cash')} · paid by ${esc(payerName(e.paidBy))}${e.notes?' · '+esc(e.notes):''}</small></div><div class="r"><b>${inr(e.amount)}</b></div></div>`).join('')||empty('Koi expense nahi'))};
+V.expenses=()=>pgh('Expenses',`<button class="btn p" data-act="addExpense">+ Add expense</button>`)+periodChips('expenses')+`<div class="card list" id="list">${LISTS.expenses()}</div>`;
+A.addExpense=()=>expenseForm(null);A.editExpense=d=>expenseForm(d.id);
+function expenseForm(id){const e=id?get('expenses',id):{},s=S(),cats=uniq(EXP_CATS.concat(all('expenses').map(x=>x.category)));
+ formModal(id?'Edit expense':'New expense',`<div class="fg">${fld('Category','category',e.category||'','text','list="dl-cat"')}<datalist id="dl-cat">${cats.map(c=>`<option>${esc(c)}</option>`).join('')}</datalist>${fld('Amount ₹ *','amount',e.amount,'number')}${fld('Date','date',e.date||today(),'date')}${sel('Mode','mode',MODES,e.mode||'Cash')}
+  ${sel('Paid by','paidBy',[['business','Business (company cash)'],['A',s.partnerA+' (apni jeb se)'],['B',s.partnerB+' (apni jeb se)']],e.paidBy||'business','','w')}${fld('Notes','notes',e.notes,'text','','w')}</div>`,v=>{
+  if(!v.category.trim()||N(v.amount)<=0){toast('Category aur amount daalo');return false}
+  const rec=Object.assign({},e,{category:v.category.trim(),amount:N(v.amount),date:v.date,mode:v.mode,paidBy:v.paidBy,notes:v.notes,by:e.by||me.id});if(id)rec.id=id;put('expenses',rec);toast('Saved ✓');render()},
+  {left:id?`<button class="btn d" data-act="delExpense" data-id="${id}">Delete</button>`:''})}
+A.delExpense=async(d,t)=>{if(await askConfirm('Expense delete karein?','Delete')){del('expenses',d.id);closeModal(t.closest('.mb'));render()}};
+/* ================= views C: reports, partner settlement, settings, import/backup, demo ================= */
+const REPS=[
+ {id:'sales',ic:'🧾',t:'Sales report',d:'Day / month / customer / product / area / salesman wise + profit'},
+ {id:'pl',ic:'📈',t:'Profit & Loss',d:'FIFO COGS, expenses, net profit'},
+ {id:'outstanding',ic:'⏳',t:'Outstanding & ageing',d:'Customer / supplier dues, invoice ageing'},
+ {id:'purchases',ic:'🚚',t:'Purchase report',d:'Day / supplier / product wise'},
+ {id:'expense',ic:'💸',t:'Expense analysis',d:'Category / month / payer wise'},
+ {id:'stock',ic:'📦',t:'Stock valuation',d:'FIFO stock value & retail value'},
+ {id:'daybook',ic:'📒',t:'Day book / cash book',d:'Receipts, payments, expenses by mode'},
+ {id:'gst',ic:'🧮',t:'GST summary',d:'Output vs input tax (when GST is on)',gst:true},
+ {id:'settlement',ic:'🤝',t:'Partner settlement',d:'Profit share since last settlement'}];
+V.reports=()=>pgh('Reports')+`<div class="grid g2" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">${REPS.filter(r=>!r.gst||S().gst).map(r=>`<a class="tile" style="text-decoration:none;color:inherit" href="#/report/${r.id}"><b>${r.ic} ${r.t}</b><small>${r.d}</small></a>`).join('')}</div>`;
+const gchips=(key,opts,cur)=>chips('r',key,opts,cur);
+const REP={
+ sales:{noPeriod:false,ctl:()=>gchips('sg',[['day','Day'],['month','Month'],['customer','Customer'],['product','Product'],['area','Area'],['salesman','Salesman']],UI.f.sg||'day'),
+  run(range){const g=UI.f.sg||'day',sc=stockCalc(),m={};
+   activeSales().filter(d=>inR(d.date,range)).forEach(d=>{const c=get('customers',d.partyId)||{};
+    const key=g==='day'?d.date:g==='month'?d.date.slice(0,7):g==='customer'?c.name||'?':g==='area'?c.area||'(no area)':g==='salesman'?userName(d.by)||'?':null;
+    d.items.forEach((l,i)=>{const lc=lineCalc(l,S().gst),share=d.net?N(d.flat)*lc.net/d.net:0,k=g==='product'?(l.name||pname(l.pid)):key;
+     const o=m[k]||(m[k]={docs:new Set(),qty:0,net:0,tax:0,cogs:0});o.docs.add(d.id);o.qty+=N(l.qty);o.net+=lc.net-share;o.tax+=lc.tax;o.cogs+=sc.lineCogs[d.id+'|'+i]||0})});
+   let ent=Object.entries(m);ent=(g==='day'||g==='month')?ent.sort((a,b)=>a[0].localeCompare(b[0])):ent.sort((a,b)=>b[1].net-a[1].net);
+   const rows=ent.map(([k,o])=>[g==='day'?fdate(k):k,o.docs.size,o.qty,o.net,o.tax,o.cogs,o.net-o.cogs,o.net?(o.net-o.cogs)/o.net*100:0]);
+   const t=rows.reduce((a,r)=>a.map((x,i)=>i?x+r[i]:x),['Total',0,0,0,0,0,0,0]);t[7]=t[3]?t[6]/t[3]*100:0;
+   const ret=sum(all('returns').filter(r=>r.type==='sale'&&inR(r.date,range)),r=>r.net);
+   return{cols:[{h:{day:'Date',month:'Month',customer:'Customer',product:'Product',area:'Area',salesman:'Salesman'}[g]},{h:'Bills',n:1,w:8},{h:'Qty',n:1,w:9},{h:'Net sales',n:1},{h:'GST',n:1,w:10},{h:'COGS (FIFO)',n:1},{h:'Profit',n:1},{h:'Margin %',n:1,w:10,pct:1}],rows,foot:t,
+    pre:ret?`<p class="mut" style="font-size:13px;margin:0 0 8px">Is period me sales returns: ${inr(ret)} (upar ke numbers me minus nahi hain — P&L me net milega)</p>`:''}}},
+ purchases:{ctl:()=>gchips('pg',[['day','Day'],['month','Month'],['supplier','Supplier'],['product','Product']],UI.f.pg||'day'),
+  run(range){const g=UI.f.pg||'day',m={};
+   activePurch().filter(d=>inR(d.date,range)).forEach(d=>{const key=g==='day'?d.date:g==='month'?d.date.slice(0,7):partyName('s',d.partyId);
+    d.items.forEach(l=>{const lc=lineCalc(l,S().gst),k=g==='product'?(l.name||pname(l.pid)):key,o=m[k]||(m[k]={docs:new Set(),qty:0,net:0,tax:0});o.docs.add(d.id);o.qty+=N(l.qty);o.net+=lc.net;o.tax+=lc.tax})});
+   let ent=Object.entries(m);ent=(g==='day'||g==='month')?ent.sort((a,b)=>a[0].localeCompare(b[0])):ent.sort((a,b)=>b[1].net-a[1].net);
+   const rows=ent.map(([k,o])=>[g==='day'?fdate(k):k,o.docs.size,o.qty,o.net,o.tax,o.net+o.tax]);
+   const t=rows.reduce((a,r)=>a.map((x,i)=>i?x+r[i]:x),['Total',0,0,0,0,0]);
+   return{cols:[{h:{day:'Date',month:'Month',supplier:'Supplier',product:'Product'}[g]},{h:'Bills',n:1,w:8},{h:'Qty',n:1,w:10},{h:'Amount',n:1},{h:'GST',n:1,w:10},{h:'Total',n:1}],rows,foot:t}}},
+ pl:{run(range){const p=plCalc(range),rows=[['Gross sales (before GST)',p.gross],['Less: extra discounts',-p.flat],['Less: sales returns',-p.retNet],['NET SALES',p.netSales],
+   ['Cost of goods sold (FIFO)',-p.cogs],['Add: cost of returned goods',p.retCogs],['GROSS PROFIT',p.gp],['Gross margin %',p.margin.toFixed(1)+'%'],['','']];
+   expByCat(p.exps).forEach(([c,a])=>rows.push(['Expense: '+c,-a]));rows.push(['Total expenses',-p.expTotal],['NET PROFIT',p.net]);
+   return{cols:[{h:'Particulars'},{h:'Amount',n:1}],rows,bold:['NET SALES','GROSS PROFIT','NET PROFIT'],
+    pre:`<div class="grid g3" style="margin-bottom:10px"><div class="tile"><small>Net sales</small><b>${inr(p.netSales)}</b></div><div class="tile"><small>Gross profit</small><b>${inr(p.gp)}</b></div><div class="tile gold"><small>Net profit</small><b class="${p.net>=0?'pos':'neg'}">${inr(p.net)}</b></div></div>`}}},
+ expense:{ctl:()=>gchips('eg',[['category','Category'],['month','Month'],['payer','Paid by'],['mode','Mode']],UI.f.eg||'category'),
+  run(range){const g=UI.f.eg||'category',ex=all('expenses').filter(e=>inR(e.date,range)),m={};
+   ex.forEach(e=>{const k=g==='category'?e.category:g==='month'?e.date.slice(0,7):g==='payer'?payerName(e.paidBy):e.mode||'Cash';const o=m[k]||(m[k]={n:0,a:0});o.n++;o.a+=N(e.amount)});
+   const tot=sum(ex,e=>e.amount);let ent=Object.entries(m);ent=g==='month'?ent.sort((a,b)=>a[0].localeCompare(b[0])):ent.sort((a,b)=>b[1].a-a[1].a);
+   const rows=ent.map(([k,o])=>[k,o.n,o.a,tot?o.a/tot*100:0]);const pl=plCalc(range);
+   return{cols:[{h:{category:'Category',month:'Month',payer:'Paid by',mode:'Mode'}[g]},{h:'Entries',n:1,w:9},{h:'Amount',n:1},{h:'% of total',n:1,w:12,pct:1}],rows,foot:['Total',ex.length,tot,100],
+    pre:`<div class="grid g2" style="margin-bottom:10px"><div class="tile"><small>Total expenses</small><b>${inr(tot)}</b></div><div class="tile"><small>Expenses as % of net sales</small><b>${pl.netSales?(tot/pl.netSales*100).toFixed(1):0}%</b></div></div>`}}},
+ outstanding:{noPeriod:true,ctl:()=>gchips('ot',[['c','Customers (receivable)'],['s','Suppliers (payable)']],UI.f.ot||'c'),
+  run(){const k=UI.f.ot||'c',rows=allDues(k).filter(x=>Math.abs(x.c.balance)>0.005).sort((a,b)=>b.c.balance-a.c.balance).map(x=>[x.p.name,x.p.area||'',x.c.ag.b0,x.c.ag.b1,x.c.ag.b2,x.c.ag.b3,x.c.balance,x.c.overdueAmt]);
+   const t=rows.reduce((a,r)=>a.map((x,i)=>i>1?x+r[i]:x),['Total','',0,0,0,0,0,0]);
+   return{cols:[{h:'Party'},{h:'Area',w:14},{h:'0-15d',n:1,w:12},{h:'16-30d',n:1,w:12},{h:'31-60d',n:1,w:12},{h:'60d+',n:1,w:12},{h:'Balance',n:1},{h:'Overdue',n:1,w:12}],rows,foot:t}}},
+ stock:{noPeriod:true,run(){const sc=stockCalc(),rows=all('products').sort((a,b)=>a.name.localeCompare(b.name)).map(p=>{const q=sc.qty[p.id]||0,v=sc.value[p.id]||0;return[p.name,p.brand||'',q,q>0?v/q:N(p.cost),v,N(p.salePrice),q*N(p.salePrice)]});
+   const t=['Total','',sum(rows,r=>r[2]),'',sum(rows,r=>r[4]),'',sum(rows,r=>r[6])];
+   return{cols:[{h:'Product'},{h:'Brand',w:12},{h:'Qty',n:1,w:9},{h:'Avg cost',n:1,w:11},{h:'Stock value',n:1},{h:'Sale price',n:1,w:11},{h:'At sale price',n:1}],rows,foot:t}}},
+ daybook:{run(range){const ent=[];
+   all('payments').filter(p=>inR(p.date,range)).forEach(p=>ent.push([p.date,p._c||0,p.type==='in'?'Received':'Paid',partyName(p.partyType,p.partyId)+(p.ref?' ('+p.ref+')':''),p.mode,p.type==='in'?N(p.amount):0,p.type==='out'?N(p.amount):0]));
+   all('expenses').filter(e=>inR(e.date,range)).forEach(e=>ent.push([e.date,e._c||0,'Expense',e.category+(e.paidBy!=='business'?' [paid by '+payerName(e.paidBy)+']':''),e.mode||'Cash',0,e.paidBy==='business'?N(e.amount):0]));
+   ent.sort((a,b)=>a[0].localeCompare(b[0])||a[1]-a[1]);const rows=ent.map(e=>[fdate(e[0]),e[2],e[3],e[4],e[5],e[6]]);
+   const modes=paidModes(range);
+   return{cols:[{h:'Date',w:11},{h:'Type',w:12},{h:'Particulars'},{h:'Mode',w:13},{h:'In',n:1},{h:'Out',n:1}],rows,foot:['','Total','','',sum(rows,r=>r[4]),sum(rows,r=>r[5])],
+    pre:`<div class="card">${table([{h:'Mode'},{h:'In',n:1},{h:'Out',n:1},{h:'Net',n:1}],Object.entries(modes).map(([k,v])=>[k,inr(v.in),inr(v.out),`<b>${inr(v.in-v.out)}</b>`]))}</div>`}}},
+ gst:{run(range){const m={};const add=(rate,k,v)=>{const o=m[rate]||(m[rate]={st:0,sx:0,pt:0,px:0});o[k]+=v};
+   activeSales().filter(d=>inR(d.date,range)).forEach(d=>d.items.forEach(l=>{const c=lineCalc(l,true);add(N(l.gst),'st',c.net);add(N(l.gst),'sx',c.tax)}));
+   activePurch().filter(d=>inR(d.date,range)).forEach(d=>d.items.forEach(l=>{const c=lineCalc(l,true);add(N(l.gst),'pt',c.net);add(N(l.gst),'px',c.tax)}));
+   const rows=Object.entries(m).sort((a,b)=>a[0]-b[0]).map(([r,o])=>[r+'%',o.st,o.sx,o.pt,o.px,o.sx-o.px]);const t=rows.reduce((a,r)=>a.map((x,i)=>i?x+r[i]:x),['Total',0,0,0,0,0]);
+   return{cols:[{h:'GST rate'},{h:'Sales taxable',n:1},{h:'Output tax',n:1},{h:'Purchase taxable',n:1},{h:'Input tax',n:1},{h:'Net payable',n:1}],rows,foot:t}}}};
+const cellFmt=(v,c)=>typeof v==='number'?(c&&c.pct?v.toFixed(1)+'%':num(v)):esc(v);
+V.report=(id)=>{if(id==='settlement')return V.settlement();const R=REP[id],meta=REPS.find(r=>r.id===id);if(!R)return empty('Report not found');
+ const per=UI.f.rp||'month',range=per==='custom'?[UI.f.rf||today(),UI.f.rt||today()]:periodRange(per),data=R.run(range);UI._rep={id,data,meta};
+ const ctl=R.noPeriod?'':chips('r','rp',[['today','Today'],['week','Week'],['month','Month'],['lastmonth','Last month'],['fy','FY'],['all','All'],['custom','Custom']],per)+(per==='custom'?`<div class="row" style="margin-bottom:8px"><input type="date" value="${range[0]}" style="width:auto" onchange="UI.f.rf=this.value;render()"> → <input type="date" value="${range[1]}" style="width:auto" onchange="UI.f.rt=this.value;render()"></div>`:'');
+ const bold=data.bold||[];
+ return`<div class="pgh"><a class="btn sm" href="#/reports">← Reports</a><h1>${meta.ic} ${meta.t}</h1><button class="btn sm" data-act="repCsv">⬇ CSV</button><button class="btn sm" data-act="repPdf">📄 PDF</button></div>${R.ctl?R.ctl():''}${ctl}${data.pre||''}
+ <div class="card"><div class="scroll"><table class="tbl"><thead><tr>${data.cols.map(c=>`<th class="${c.n?'n':''}">${c.h}</th>`).join('')}</tr></thead><tbody>${data.rows.map(r=>`<tr ${bold.includes(r[0])?'style="font-weight:700;background:#f6f8fd"':''}>${r.map((v,i)=>`<td class="${data.cols[i].n?'n':''}">${cellFmt(v,data.cols[i])}</td>`).join('')}</tr>`).join('')||`<tr><td colspan="${data.cols.length}" class="empty">Is period me data nahi</td></tr>`}</tbody>${data.foot?`<tfoot><tr>${data.foot.map((v,i)=>`<td class="${data.cols[i].n?'n':''}">${cellFmt(v,data.cols[i])}</td>`).join('')}</tr></tfoot>`:''}</table></div></div>`};
+A.repCsv=()=>{const{id,data}=UI._rep;const rows=[data.cols.map(c=>c.h)].concat(data.rows.map(r=>r.map(v=>typeof v==='number'?r2(v):v)));if(data.foot)rows.push(data.foot.map(v=>typeof v==='number'?r2(v):v));downloadFile('report-'+id+'-'+today()+'.csv',toCSV(rows),'text/csv')};
+A.repPdf=()=>{const{id,data,meta}=UI._rep,per=UI.f.rp||'month',range=per==='custom'?[UI.f.rf,UI.f.rt]:periodRange(per),R=REP[id];
+ const fm=(v,c)=>typeof v==='number'?(c&&c.pct?v.toFixed(1)+'%':num(v)):String(v);
+ sharePdf(tablePdf({title:meta.t.toUpperCase(),sub:R.noPeriod?['As on '+fdate(today())]:[fdate(range[0])+' to '+fdate(range[1])],name:id+'-report.pdf',
+  cols:data.cols.map(c=>({h:c.h,w:c.w||(c.n?14:30),a:c.n?'r':'l'})),rows:data.rows.map(r=>r.map((v,i)=>fm(v,data.cols[i]))),foot:data.foot?data.foot.map((v,i)=>fm(v,data.cols[i])):null}))};
+
+/* ---------------- partner settlement ---------------- */
+V.settlement=()=>{const s=S(),sets=all('settlements').sort((a,b)=>a.to.localeCompare(b.to)),last=sets[sets.length-1];
+ const from=UI.f.setFrom||(last?addDays(last.to,1):'2000-01-01'),to=UI.f.setTo||today(),pl=plCalc([from,to]);
+ const sa=N(s.shareA)/100,sb=1-sa,paidA=sum(pl.exps.filter(e=>e.paidBy==='A'),e=>e.amount),paidB=sum(pl.exps.filter(e=>e.paidBy==='B'),e=>e.amount);
+ const shA=pl.net*sa,shB=pl.net*sb,totA=shA+paidA,totB=shB+paidB;UI._set={from,to,pl,shA,shB,paidA,paidB,totA,totB};
+ return`<div class="pgh"><a class="btn sm" href="#/reports">← Reports</a><h1>🤝 Partner settlement</h1></div>
+ <div class="card"><div class="fg">${fld('Period from','setFrom',from,'date','onchange="UI.f.setFrom=this.value;render()"')}${fld('Settlement date / period till','setTo',to,'date','onchange="UI.f.setTo=this.value;render()"')}</div>
+ <p class="mut" style="margin:0;font-size:13px">${last?`Pichli settlement: ${fdate(last.to)} tak. Ab sirf us ke baad ka data count hoga.`:'Abhi tak koi settlement nahi hui — shuru se count hoga.'} · Costing: FIFO</p></div>
+ <div class="card">${table([{h:'Particulars'},{h:'Amount',n:1}],[['Net sales (after returns & discounts)',inr(pl.netSales)],['Cost of goods sold (FIFO)',inr(pl.cogsNet)],['<b>Gross profit</b>',`<b>${inr(pl.gp)}</b>`],['Expenses (is period ke)',inr(pl.expTotal)],['<b>Net profit to share</b>',`<b class="${pl.net>=0?'pos':'neg'}">${inr(pl.net)}</b>`]])}</div>
+ <div class="card">${table([{h:'Partner'},{h:'Share',n:1},{h:'Profit share',n:1},{h:'Expense wapas',n:1},{h:'Total payable',n:1}],[[esc(s.partnerA),s.shareA+'%',inr(shA),inr(paidA),`<b>${inr(totA)}</b>`],[esc(s.partnerB),(100-N(s.shareA))+'%',inr(shB),inr(paidB),`<b>${inr(totB)}</b>`]])}
+ <p class="mut" style="font-size:13px;margin:8px 0 0">Jis partner ne expense apni jeb se diya, use woh amount share ke upar wapas milta hai.</p></div>
+ <div class="row" style="margin-bottom:14px"><button class="btn g" data-act="saveSettlement">✅ Settlement save karo (period lock)</button><button class="btn" data-act="settlePdf">📄 PDF</button></div>
+ ${sets.length?`<h2 class="sec">Pichli settlements</h2><div class="card">${table([{h:'Till'},{h:'Period'},{h:'Net profit',n:1},{h:esc(s.partnerA),n:1},{h:esc(s.partnerB),n:1}],sets.slice().reverse().map(x=>[fdate(x.to),fdate(x.from)+' → '+fdate(x.to),inr(x.net),inr(x.totA),inr(x.totB)]))}${isOwner()?`<button class="btn sm d" style="margin-top:8px" data-act="undoSettlement">Last settlement undo</button>`:''}</div>`:''}`};
+A.saveSettlement=async()=>{const x=UI._set;if(x.to<x.from){toast('Date galat hai');return}
+ if(!(await askConfirm(`${fdate(x.from)} se ${fdate(x.to)} tak ki settlement save karein? Agli settlement ${fdate(addDays(x.to,1))} se shuru hogi.`,'Save')))return;
+ put('settlements',{from:x.from,to:x.to,net:x.pl.net,gp:x.pl.gp,expenses:x.pl.expTotal,netSales:x.pl.netSales,totA:r2(x.totA),totB:r2(x.totB),shA:r2(x.shA),shB:r2(x.shB),paidA:x.paidA,paidB:x.paidB,by:me.id});
+ UI.f.setFrom=null;UI.f.setTo=null;toast('Settlement saved ✓');render()};
+A.undoSettlement=async()=>{const sets=all('settlements').sort((a,b)=>a.to.localeCompare(b.to));if(sets.length&&await askConfirm('Last settlement hata dein?','Undo')){del('settlements',sets[sets.length-1].id);render()}};
+A.settlePdf=()=>{const x=UI._set,s=S();sharePdf(tablePdf({title:'PARTNER SETTLEMENT',sub:[fdate(x.from)+' to '+fdate(x.to)],name:'Settlement-'+x.to+'.pdf',cols:[{h:'Particulars',w:60},{h:'Amount',w:20,a:'r'}],
+ rows:[['Net sales',num(x.pl.netSales)],['COGS (FIFO)',num(x.pl.cogsNet)],['Gross profit',num(x.pl.gp)],['Expenses',num(x.pl.expTotal)],['Net profit',num(x.pl.net)],['',''],[s.partnerA+' share ('+s.shareA+'%)',num(x.shA)],[s.partnerA+' expenses paid (reimburse)',num(x.paidA)],[s.partnerA+' TOTAL',num(x.totA)],['',''],[s.partnerB+' share ('+(100-N(s.shareA))+'%)',num(x.shB)],[s.partnerB+' expenses paid (reimburse)',num(x.paidB)],[s.partnerB+' TOTAL',num(x.totB)]]}))};
+
+/* ---------------- settings ---------------- */
+V.settings=()=>{const s=S(),owner=isOwner(),adm=isAdmin();
+ const acct=`<div class="card"><b>Mera account — ${esc(me.name)} (${me.role})</b><div class="fg" style="margin-top:8px">${fld('New password','npw','','password','autocomplete="new-password"')}<div style="align-self:end;margin-bottom:9px"><button class="btn" data-act="changePw">Password badlo</button></div></div></div>`;
+ if(!adm)return pgh('Settings')+acct+`<div class="card"><button class="btn d" data-act="logout">Logout</button></div>`;
+ const users=all('users').map(u=>`<div class="it" ${owner?`data-act="editUser" data-id="${u.id}"`:''}><div class="m"><b>${esc(u.name)}</b><small>@${esc(u.username)} · ${u.role}${u.active===false?' · disabled':''}</small></div><div class="r mut">${esc(u.code||'')}</div></div>`).join('');
+ return pgh('Settings')+`<div class="card"><b>Business details</b><div class="fg" style="margin-top:8px" id="bizForm">${fld('Business name','bizName',s.bizName,'text','','w')}${fld('Brand line (invoice header)','brand',s.brand)}${fld('Phone','phone',s.phone)}${fld('Address','address',s.address,'text','','w')}
+  ${fld('UPI ID (invoice par dikhega)','upi',s.upi)}${fld('Invoice prefix','prefix',s.prefix)}${fld('Default credit days','defaultCreditDays',s.defaultCreditDays,'number')}${fld('Invoice footer','footer',s.footer)}${fld('Bill tagline (naam ke neeche)','tagline',s.tagline,'text','','w')}${fld('Email (bill par)','email',s.email)}${fld('Contacts line (bill par)','contacts',s.contacts,'text','','w')}${fld('Bill: thanks line','thanks',s.thanks)}${fld('Bill: signature name','sign',s.sign)}${fld('Bill: terms line 1','terms1',s.terms1)}${fld('Bill: terms line 2','terms2',s.terms2)}${sel('Bill par duplicate copy','dupCopy',[['1','Haan (original + duplicate)'],['0','Nahi (sirf ek)']],s.dupCopy===false?'0':'1')}
+  ${sel('GST on invoices','gst',[['0','Off (simple bill, no tax)'],['1','On (tax invoice, GST per item)']],s.gst?'1':'0')}${fld('GSTIN','gstin',s.gstin)}
+  ${fld('Partner 1 name','partnerA',s.partnerA)}${fld('Partner 1 profit share %','shareA',s.shareA,'number')}${fld('Partner 2 name','partnerB',s.partnerB)}<div></div></div>
+  <button class="btn p" data-act="saveBiz">Save</button></div>
+ <div class="card"><div class="row"><b class="sp">Users & roles</b>${owner?`<button class="btn sm p" data-act="addUser">+ Add user</button>`:''}</div><div class="list">${users}</div>
+  <p class="mut" style="font-size:12.5px;margin:6px 0 0"><b>owner / partner</b>: sab kuch · <b>sales</b>: orders, invoices, payments, customers (profit, cost, purchase, reports nahi dikhte)</p></div>${acct}
+ <div class="card"><b>Data & backup</b><div class="row" style="margin-top:8px"><button class="btn" data-act="exportBackup">⬇ Backup (JSON)</button><label class="btn">⬆ Restore<input type="file" accept=".json" hidden onchange="restoreBackup(this.files[0])"></label><button class="btn" data-act="importCsv">⬆ Import customers / products (CSV)</button><label class="btn">⬆ Import data file (JSON)<input type="file" accept=".json" hidden onchange="importDataFile(this.files[0]);this.value=''"></label>
+  ${owner&&!all('sales').length?`<button class="btn" data-act="loadDemo">Demo data load karo</button>`:''}${owner?`<button class="btn d" data-act="resetAll">Saara data delete</button>`:''}</div>
+  <p class="mut" style="font-size:12.5px;margin:6px 0 0">Data is device ke browser/app storage me hai. Regular backup lo ya neeche Google Sheet sync lagao.</p></div>
+ <div class="card"><b>☁ Google Sheet sync (multi-device)</b><div class="fg" style="margin-top:8px">${fld('Apps Script Web App URL','syncUrl',s.syncUrl,'text','','w')}${fld('Secret key','syncKey',s.syncKey)}<div style="align-self:end;margin-bottom:9px" class="row"><button class="btn" data-act="saveSync">Save</button><button class="btn p" data-act="syncNow">Sync now</button>${s.syncUrl?'<button class="btn" data-act="copyShare">🔗 Partner setup link</button>':''}</div></div>
+  <p class="mut" style="font-size:12.5px;margin:0">${DB.meta.lastSyncAt?'Last sync: '+new Date(DB.meta.lastSyncAt).toLocaleString():'Abhi sync nahi hua'} · Setup ke liye <code>apps-script-sync.gs</code> file dekho.</p></div>`};
+A.saveBiz=(d,t)=>{const v=fv($('#bizForm'));saveSettings({bizName:v.bizName,brand:v.brand,phone:v.phone,address:v.address,upi:v.upi,prefix:(v.prefix||'AZT').trim(),tagline:v.tagline,email:v.email,contacts:v.contacts,thanks:v.thanks,sign:v.sign,terms1:v.terms1,terms2:v.terms2,dupCopy:v.dupCopy==='1',defaultCreditDays:N(v.defaultCreditDays),footer:v.footer,gst:v.gst==='1',gstin:v.gstin,partnerA:v.partnerA,partnerB:v.partnerB,shareA:Math.min(100,Math.max(0,N(v.shareA)))});toast('Saved ✓');render()};
+A.changePw=async()=>{const pw=$('[name=npw]').value;if(pw.length<4){toast('4+ character');return}const u=await makeUser(Object.assign({},me,{pw}));put('users',Object.assign({},me,{salt:u.salt,hash:u.hash}));me=get('users',me.id);toast('Password badal gaya ✓');$('[name=npw]').value=''};
+A.addUser=()=>userForm(null);A.editUser=d=>userForm(d.id);
+function userForm(id){const u=id?get('users',id):{role:'sales',active:true};
+ formModal(id?'Edit user':'New user',`<div class="fg">${fld('Name','name',u.name)}${fld('Username','username',u.username,'text','autocapitalize="none"')}${sel('Role','role',[['sales','Sales (limited)'],['partner','Partner (full)'],['owner','Owner (full + users)']],u.role)}${fld('Code (1-2 letters, invoice no. me)','code',u.code||'')}
+  ${fld(id?'New password (blank = no change)':'Password','pw','','password','autocomplete="new-password"')}${sel('Status','active',[['1','Active'],['0','Disabled']],u.active===false?'0':'1')}</div>`,async v=>{
+  if(!v.name.trim()||!v.username.trim()){toast('Naam aur username chahiye');return false}
+  if(all('users').some(x=>x.id!==id&&x.username.toLowerCase()===v.username.trim().toLowerCase())){toast('Username pehle se hai');return false}
+  if(!id&&v.pw.length<4){toast('Password 4+ char');return false}
+  if(id===me.id&&(v.active==='0'||v.role!=='owner')&&all('users').filter(x=>x.role==='owner'&&x.active!==false).length<2){toast('Aakhri owner ko disable/demote nahi kar sakte');return false}
+  let rec=Object.assign({},u,{name:v.name.trim(),username:v.username.trim(),role:v.role,code:(v.code||v.name[0]).toUpperCase().slice(0,2),active:v.active==='1'});
+  if(v.pw){const h=await makeUser({pw:v.pw});rec.salt=h.salt;rec.hash=h.hash}if(!id){rec.id=uid()}put('users',rec);if(id===me.id)me=get('users',id);toast('Saved ✓');render()})}
+A.saveSync=()=>{const v=fv($('.card [name=syncUrl]').closest('.card'));saveSettings({syncUrl:v.syncUrl.trim(),syncKey:v.syncKey.trim()});toast('Saved ✓')};
+A.syncNow=()=>{A.saveSync();syncNow(true)};
+A.exportBackup=()=>{flushDB();downloadFile('zeezap-backup-'+today()+'.json',JSON.stringify(DB),'application/json')};
+async function restoreBackup(file){if(!file)return;try{const o=JSON.parse(await file.text());if(!o.customers&&!o.users)throw new Error('Invalid file');
+ if(!(await askConfirm('Current data replace ho jayega backup se. Pehle backup le liya hai?','Restore')))return;
+ COLS.forEach(c=>DB[c]=o[c]||{});DB.meta=o.meta||{};ver++;flushDB();if(!me||!get('users',me.id)){logout()}else{me=get('users',me.id);render()}toast('Restore ho gaya ✓')}catch(e){toast('Restore error: '+e.message)}}
+A.resetAll=async()=>{if(await askConfirm('SAARA data delete hoga (invoices, parties, products, users). Sure?','Delete all')){const t=await askInput('Confirm','Type DELETE to confirm');if(t==='DELETE'){COLS.forEach(c=>DB[c]={});DB.meta={};ver++;flushDB();logout()}}};
+
+/* ---------------- CSV import ---------------- */
+const IMPORT_MAP={customers:{name:['name','shop','shopname','customer','customername','party'],contact:['contact','contactperson','owner'],phone:['phone','mobile','mobileno','contactno'],area:['area','zone','location','city'],address:['address'],gstin:['gstin','gst'],creditLimit:['creditlimit','limit'],creditDays:['creditdays','days'],opening:['opening','openingbalance','balance','outstanding','due']},
+ suppliers:{name:['name','supplier','suppliername','party'],phone:['phone','mobile'],address:['address'],opening:['opening','openingbalance','balance','payable']},
+ products:{name:['name','product','productname','item'],brand:['brand'],unit:['unit','uom'],mrp:['mrp'],salePrice:['saleprice','sellingprice','rate','price','wholesale'],cost:['cost','purchaseprice','purchaserate','costprice'],gst:['gst','gstpercent','tax'],minStock:['minstock','reorder','minqty'],openQty:['openqty','openingqty','stock','qty','quantity'],openCost:['opencost','openingcost']}};
+A.importCsv=()=>{const m=formModal('Import from CSV',`${sel('What to import','type',[['customers','Customers'],['products','Products'],['suppliers','Suppliers']],'customers')}<label class="f">CSV file<input type="file" name="file" accept=".csv,.txt"></label><label class="f">Ya yahan paste karo (pehli row = headers)<textarea name="txt" rows="5"></textarea></label>
+  <div class="row"><button class="btn sm" type="button" data-act="csvTemplate">⬇ Template download</button></div><p class="mut" style="font-size:12.5px">Excel se "Save as CSV" karo. Headers: customers → name, phone, area, address, creditLimit, creditDays, opening · products → name, brand, unit, mrp, salePrice, cost, gst, minStock, openQty, openCost</p>`,async(v,m)=>{
+  let text=v.txt;const f=m.querySelector('[name=file]').files[0];if(f)text=await f.text();if(!text||!text.trim()){toast('File ya text do');return false}
+  const rows=parseCSV(text);if(rows.length<2){toast('Data nahi mila');return false}
+  const map=IMPORT_MAP[v.type],hdr=rows[0].map(h=>h.toLowerCase().replace(/[^a-z0-9]/g,'')),idx={};
+  Object.entries(map).forEach(([k,al])=>{const i=hdr.findIndex(h=>al.includes(h));if(i>=0)idx[k]=i});
+  if(idx.name===undefined){toast('"name" column nahi mila');return false}
+  const col=v.type,existing=new Set(all(col).map(x=>x.name.trim().toLowerCase()));let n=0,skip=0;
+  rows.slice(1).forEach(r=>{const o={};Object.entries(idx).forEach(([k,i])=>{o[k]=(r[i]||'').trim()});if(!o.name){return}
+   if(existing.has(o.name.toLowerCase())){skip++;return}
+   ['creditLimit','creditDays','opening','mrp','salePrice','cost','gst','minStock','openQty','openCost'].forEach(k=>{if(k in o)o[k]=N(String(o[k]).replace(/[₹,]/g,''))});
+   if(col==='products'&&!('openCost' in o))o.openCost=o.cost||0;if(col==='products'&&!o.unit)o.unit='pcs';
+   put(col,o);existing.add(o.name.toLowerCase());n++});
+  toast(`${n} import hue${skip?`, ${skip} duplicate skip`:''} ✓`);render()},{label:'Import'})};
+A.csvTemplate=(d,t)=>{const type=fv(t.closest('.mb')).type;const hd={customers:['name','phone','area','address','creditLimit','creditDays','opening'],products:['name','brand','unit','mrp','salePrice','cost','gst','minStock','openQty','openCost'],suppliers:['name','phone','address','opening']}[type];downloadFile(type+'-template.csv',toCSV([hd]),'text/csv')};
+
+/* ---------------- import a prepared data file (old ledger -> app) ---------------- */
+async function importDataFile(file){
+ if(!file)return;
+ try{
+  const o=JSON.parse(await file.text());if(o.format!=='zeezap-import-v1')throw new Error('Ye Zeezap import file nahi hai');
+  const cols=['products','customers','suppliers','sales','purchases','payments'],cnt=cols.map(c=>(o[c]||[]).filter(r=>!get(c,r.id)).length);
+  const msg=`Import hoga: ${cnt[0]} products, ${cnt[1]} customers, ${cnt[2]} suppliers, ${cnt[3]} sales invoices, ${cnt[4]} purchase bills, ${cnt[5]} payments. Jo pehle se hai woh dobara nahi judega. Aage badhein?`;
+  if(!(await askConfirm(msg,'Import')))return;
+  const names=uniq(['sales','purchases','payments'].flatMap(c=>(o[c]||[]).map(r=>r.byName).filter(Boolean))),umap={};
+  names.forEach(n=>{let u=all('users').find(x=>x.name.toLowerCase().startsWith(n.toLowerCase())||x.username.toLowerCase()===n.toLowerCase());
+   if(!u){u={id:uid(),name:n,username:n.toLowerCase(),role:'owner',active:false,salt:'',hash:'',code:n[0].toUpperCase()};put('users',u)}umap[n]=u.id});
+  let n=0;cols.forEach(c=>(o[c]||[]).forEach(r=>{if(get(c,r.id))return;const rec=Object.assign({},r);if(rec.byName){rec.by=umap[rec.byName];delete rec.byName}put(c,rec);n++}));
+  if(o.settingsPatch){const s=S(),p={};if(s.partnerA==='Partner 1'&&o.settingsPatch.partnerA)p.partnerA=o.settingsPatch.partnerA;if(s.partnerB==='Partner 2'&&o.settingsPatch.partnerB)p.partnerB=o.settingsPatch.partnerB;if(Object.keys(p).length)saveSettings(p)}
+  flushDB();toast(`✅ ${n} records import ho gaye`);render();
+ }catch(e){console.error(e);toast('Import error: '+e.message)}}
+
+/* ---------------- demo data ---------------- */
+function loadDemo(){
+ const T=today(),d=n=>addDays(T,-n),pr={};
+ [['Zeezap Baby Wipes 72s','Zeezap',149,95,70],['Zeezap Baby Wipes 30s','Zeezap',69,45,32],['Concord Baby Wipes 72s','Concord',140,90,68],['Baby Hub Wipes 80s','Baby Hub',160,100,75]].forEach(([name,brand,mrp,sp,cost])=>{pr[name]=put('products',{name,brand,unit:'pcs',mrp,salePrice:sp,cost,gst:12,minStock:40,openQty:0,openCost:0})});
+ const P=Object.values(pr),cust=[];
+ [['Shifa Medical','Bhiwandi - Kamatghar',20000,15],['Al Noor Medicals','Bhiwandi - Narpoli',15000,15],['City Care Pharmacy','Bhiwandi - Kalher',30000,30],['Rahmat Medical','Thane - Mumbra',10000,10],['New Life Medicals','Bhiwandi - Kamatghar',15000,15]].forEach(([name,area,creditLimit,creditDays])=>cust.push(put('customers',{name,area,phone:'98200000'+Math.floor(10+Math.random()*80),creditLimit,creditDays,opening:name==='Rahmat Medical'?2500:0})));
+ const sup=put('suppliers',{name:'Aarav Distributors',phone:'9820011111',opening:0});
+ const buy=(n,items)=>{const t=docCalc(items,0,false);const rec=put('purchases',{no:nextNo('purchases','PUR-'),date:d(n),partyId:sup.id,items:items.map(l=>({...l,name:pname(l.pid)})),status:'active',by:me.id,...t});put('payments',{date:d(n),type:'out',partyType:'s',partyId:sup.id,amount:Math.round(t.total*0.5),mode:'Bank transfer',alloc:[{id:rec.id,amt:Math.round(t.total*0.5)}],by:me.id})};
+ buy(25,[{pid:P[0].id,qty:300,rate:70},{pid:P[1].id,qty:200,rate:32},{pid:P[2].id,qty:150,rate:68}]);
+ buy(8,[{pid:P[0].id,qty:200,rate:72},{pid:P[3].id,qty:120,rate:75}]);
+ const sale=(n,ci,items,pay)=>{const its=items.map(([pi,q,r])=>({pid:P[pi].id,name:P[pi].name,qty:q,rate:r,disc:0,gst:12}));const t=docCalc(its,0,false);
+  const rec=put('sales',{no:nextNo('sales',S().prefix+'-'),date:d(n),partyId:cust[ci].id,items:its,status:'active',by:me.id,notes:'',...t});
+  if(pay)put('payments',{date:d(n),type:'in',partyType:'c',partyId:cust[ci].id,amount:pay,mode:pay%2?'UPI':'Cash',alloc:[{id:rec.id,amt:Math.min(pay,t.total)}],by:me.id});return rec};
+ sale(14,0,[[0,40,95],[1,30,45]],2000);sale(12,1,[[0,24,95]],1000);sale(10,2,[[0,60,93],[2,30,90]],4000);sale(7,3,[[1,48,45]],0);sale(5,0,[[0,36,95],[2,12,90]],3000);sale(3,4,[[3,24,100]],1000);sale(1,2,[[0,50,95]],0);
+ put('orders',{no:nextNo('orders','ORD-'),date:T,partyId:cust[1].id,items:[{pid:P[0].id,name:P[0].name,qty:30,rate:95,disc:0,gst:12},{pid:P[1].id,name:P[1].name,qty:24,rate:45,disc:0,gst:12}],status:'pending',by:me.id,...docCalc([{qty:30,rate:95},{qty:24,rate:45}],0,false)});
+ put('expenses',{date:d(9),category:'Transport / Delivery',amount:900,mode:'Cash',paidBy:'A',notes:'Tempo to Thane',by:me.id});put('expenses',{date:d(4),category:'Fuel',amount:600,mode:'Cash',paidBy:'business',by:me.id});
+ toast('Demo data load ho gaya ✓');render()}
+A.loadDemo=async()=>{if(await askConfirm('Sample products, customers, invoices load karein? (baad me "Saara data delete" se hata sakte ho)','Load'))loadDemo()};
+
+A.copyShare=async()=>{const l=shareLink();try{await navigator.clipboard.writeText(l);toast('Link copy ho gaya — Zeeshan ko bhejo (private rakhna)')}catch(e){prompt('Ye link copy karo',l)}};
+/* ================= boot ================= */
+(function boot(){
+ loadDB();
+ try{const q=new URLSearchParams(location.search).get('cfg');if(q){const o=JSON.parse(decodeURIComponent(escape(atob(q))));
+  if(o.u&&(!S().syncUrl||S().syncUrl!==o.u)){saveSettings({syncUrl:o.u,syncKey:o.k||''});DB.settings.main._u=0;DB.meta.cursor=0;DB.meta.lastPush=Date.now();persist()}
+  history.replaceState(null,'',location.pathname+location.hash)}}catch(e){console.warn('cfg',e)}
+ const sid=getSession();if(sid){const u=get('users',sid);if(u&&u.active!==false)me=u}
+ if(!location.hash)location.hash='#/dashboard';
+ render();
+ if(me||S().syncUrl)syncNow(false).then(()=>{if(!me)render()});
+ if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{})
+})();
+</script>
+</body></html>
